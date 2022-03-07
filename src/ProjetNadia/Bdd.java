@@ -4,9 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 
 
@@ -19,7 +17,7 @@ public interface Bdd {
 		Connection cn = null;
 		PreparedStatement ps = null;
 		ResultSet rs =null;
-		ListeJoueur liste = new ListeJoueur();		
+		ListeJoueur liste = new ListeJoueur();	
 		if(choice == null) {
 			choice = "";
 		}
@@ -41,7 +39,7 @@ public interface Bdd {
 			}catch (SQLException e){
 				e.printStackTrace();
 			}
-				catch (ClassNotFoundException e) {
+			catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			finally {
@@ -185,5 +183,40 @@ public interface Bdd {
 			}
 		message = "joueur supprimé, la fenetre va automatiquement se fermer";
 		return message;
+	}
+	
+	public static ListeJoueur searchPlayer(String search) {
+		String url = BddConnection.getUrl();
+		String login = BddConnection.getLogin();
+		String password = BddConnection.getPassword();	
+		Connection cn = null;
+		PreparedStatement ps = null;	
+		ResultSet rs =null;
+		ListeJoueur liste = new ListeJoueur();
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			cn = DriverManager.getConnection(url, login, password);
+			ps = cn.prepareStatement("SELECT * FROM joueur WHERE NOM LIKE '%" + search +"%' OR PRENOM LIKE '%"+search+"%'");
+			rs = ps.executeQuery();
+			while(rs.next()) {				
+				Joueur joueur = new Joueur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				liste.addJoueur(joueur);				
+				}	
+					
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+				catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			finally {
+				try {
+					cn.close();
+					ps.close();					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}	
+			}
+		return liste;
 	}
 }

@@ -13,9 +13,11 @@ public class AddPlayerWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JTextField playerNameField;
 	private JTextField playerFirstNameField;
+	@SuppressWarnings("rawtypes")
 	private JComboBox playerSexChoice;
 	private int ID;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public AddPlayerWindow() {
 		super("Ajouter un joueur");
 		getContentPane().setBackground(new Color(0, 0, 0));

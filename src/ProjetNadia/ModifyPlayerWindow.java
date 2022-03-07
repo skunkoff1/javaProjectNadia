@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Timer;
@@ -18,9 +17,11 @@ public class ModifyPlayerWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JTextField playerNameField;
 	private JTextField playerFirstNameField;
+	@SuppressWarnings("rawtypes")
 	private JComboBox playerSexChoice;
 	private int ID;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModifyPlayerWindow() {
 		super("Modifier le joueur seléctionné");
 		getContentPane().setBackground(new Color(0, 0, 0));

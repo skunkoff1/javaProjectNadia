@@ -2,16 +2,12 @@ package ProjetNadia;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import javax.swing.border.LineBorder;
 
 public class Window extends JFrame {
 	/**
@@ -21,6 +17,7 @@ public class Window extends JFrame {
 	private static JTable table;
 	private static String choice;
 	private ListeJoueur liste = new ListeJoueur();
+	private JTextField searchField;
 	
 	public Window() {
 		super("Projet Nadia");
@@ -29,11 +26,11 @@ public class Window extends JFrame {
 		setSize(new Dimension(1200, 800));
 		setResizable(false);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setLocationRelativeTo(null);	
-		getContentPane().setLayout(new CardLayout(0, 0));		
-		
+		this.setLocationRelativeTo(null);
+		getContentPane().setLayout(new CardLayout(0, 0));
 		JTabbedPane container = new JTabbedPane(JTabbedPane.TOP);
-		getContentPane().add(container, "name_19341793489500");
+		container.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		getContentPane().add(container, "name_19108795320400");
 				
 		DefaultTableModel model = new DefaultTableModel(
 	            new Object [][] {
@@ -44,10 +41,14 @@ public class Window extends JFrame {
 		
 		String[] comboChoice = {"les deux" , "femme", "homme" };
 		
-		JPanel tab1 = new JPanel();		
-		tab1.setBackground(Color.BLACK);
-		container.addTab("Joueur", null, tab1, null);
-		tab1.setLayout(null);
+		// Remplissage par défaut du tableau
+		liste = Bdd.GetPlayers("");
+		
+		JPanel playerTab = new JPanel();		
+		playerTab.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerTab.setBackground(Color.BLACK);
+		container.addTab(" Joueur ", null, playerTab, null);
+		playerTab.setLayout(null);
 		
 		table = new JTable(model);
 		table.setFillsViewportHeight(true);
@@ -68,11 +69,12 @@ public class Window extends JFrame {
 		errorLabel.setBackground(new Color(255, 0, 0));
 		errorLabel.setBounds(158, 11, 870, 37);
 		errorLabel.setVisible(false);
-		tab1.add(errorLabel);
+		playerTab.add(errorLabel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(157, 133, 871, 600);
-		tab1.add(scrollPane);
+		scrollPane.setBounds(157, 197, 871, 600);
+		playerTab.add(scrollPane);
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		JComboBox comboBox = new JComboBox(comboChoice);
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -84,13 +86,13 @@ public class Window extends JFrame {
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		comboBox.setForeground(Color.BLACK);
 		comboBox.setBounds(157, 100, 145, 22);
-		tab1.add(comboBox);
-				
+		playerTab.add(comboBox);
+		
 		JLabel lblNewLabel = new JLabel("Choisir le sexe :");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setBounds(157, 59, 145, 30);
-		tab1.add(lblNewLabel);
+		playerTab.add(lblNewLabel);
 		
 		JButton addPlayerButton = new JButton("<html><p style='text-align:center'>Ajouter<br>un joueur</p></html>");
 		addPlayerButton.addActionListener(new ActionListener() {
@@ -101,7 +103,7 @@ public class Window extends JFrame {
 		});
 		addPlayerButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		addPlayerButton.setBounds(379, 66, 159, 56);
-		tab1.add(addPlayerButton);
+		playerTab.add(addPlayerButton);
 		
 		JButton editPlayerButton = new JButton("<html><p style='text-align:center'>Editer<br>un joueur</p></html>");
 		editPlayerButton.addActionListener(new ActionListener() {
@@ -126,7 +128,7 @@ public class Window extends JFrame {
 		});
 		editPlayerButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		editPlayerButton.setBounds(618, 66, 159, 56);
-		tab1.add(editPlayerButton);
+		playerTab.add(editPlayerButton);
 		
 		JButton deletePlayerButton = new JButton("<html><p style='text-align:center'>Supprimer<br>un joueur</p></html>");
 		deletePlayerButton.addActionListener(new ActionListener() {
@@ -151,22 +153,95 @@ public class Window extends JFrame {
 		});
 		deletePlayerButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		deletePlayerButton.setBounds(869, 66, 159, 56);
-		tab1.add(deletePlayerButton);	
-				
-		JPanel tab2 = new JPanel();
-		container.addTab("Match", null, tab2, null);
-		tab2.setLayout(null);
+		playerTab.add(deletePlayerButton);	
+		liste.fillTab(table);
+		
+		searchField = new JTextField();
+		searchField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				errorLabel.setVisible(false);
+				String search = searchField.getText();
+				liste = Bdd.searchPlayer(search);
+				int size = liste.getSize();
+				if(size ==0) {
+					errorLabel.setVisible(true);
+					errorLabel.setText("Aucun joueur trouvé");
+				}
+				liste.fillTab(table);
+			}
+		});
+		
+		searchField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		searchField.setForeground(Color.BLACK);
+		searchField.setBounds(316, 144, 461, 30);
+		playerTab.add(searchField);
+		searchField.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("Rechercher :");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setBounds(199, 144, 120, 30);
+		playerTab.add(lblNewLabel_1);
+		
+		JPanel matchTab = new JPanel();
+		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		container.addTab(" Match ", null, matchTab, null);
+		matchTab.setLayout(null);
 		
 		JButton btnNewButton_1 = new JButton("New button");
 		btnNewButton_1.setBounds(47, 54, 269, 135);
-		tab2.add(btnNewButton_1);
+		matchTab.add(btnNewButton_1);
 		
 		JPanel tab3 = new JPanel();
-		container.addTab("Chais Pas", null, tab3, null);
+		container.addTab(" Chais Pas ", null, tab3, null);
 		
-		// Remplissage par défaut du tableau
-		liste = Bdd.GetPlayers("");
-		liste.fillTab(table);		
+		JPanel optionTab = new JPanel();
+		optionTab.setBackground(Color.BLACK);
+		container.addTab(" Options ", null, optionTab, null);
+		optionTab.setLayout(null);
+		
+		JLabel lblNewLabel_2 = new JLabel("  Options Graphiques");
+		lblNewLabel_2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblNewLabel_2.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		lblNewLabel_2.setForeground(Color.WHITE);
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		lblNewLabel_2.setBounds(29, 11, 347, 41);
+		optionTab.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("Style de police");
+		lblNewLabel_3.setForeground(Color.WHITE);
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_3.setBounds(39, 166, 132, 35);
+		optionTab.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_3_1 = new JLabel("Taille de police");
+		lblNewLabel_3_1.setForeground(Color.WHITE);
+		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_3_1.setBounds(39, 106, 132, 35);
+		optionTab.add(lblNewLabel_3_1);
+		
+		@SuppressWarnings("rawtypes")
+		JComboBox fontSizeBox = new JComboBox();
+		fontSizeBox.setBounds(249, 115, 127, 27);
+		optionTab.add(fontSizeBox);
+		
+		@SuppressWarnings("rawtypes")
+		JComboBox fontStyleBox = new JComboBox();
+		fontStyleBox.setBounds(249, 175, 127, 27);
+		optionTab.add(fontStyleBox);
+		
+		JLabel lblNewLabel_4 = new JLabel("New label");
+		lblNewLabel_4.setOpaque(true);
+		lblNewLabel_4.setBounds(582, 0, 1, 733);
+		optionTab.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("  Options on verra");
+		lblNewLabel_2_1.setForeground(Color.WHITE);
+		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		lblNewLabel_2_1.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		lblNewLabel_2_1.setAlignmentX(0.5f);
+		lblNewLabel_2_1.setBounds(641, 11, 347, 41);
+		optionTab.add(lblNewLabel_2_1);
 		
 		this.setVisible(true);
 	}

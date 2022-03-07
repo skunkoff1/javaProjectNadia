@@ -29,7 +29,12 @@ public class ListeJoueur {
 		    model.removeRow(i);
 		}
 		for(Joueur n: ListeJoueur) {
-			model.insertRow(model.getRowCount(), new Object[] {n.getID(),n.getNom(), n.getPrenom(), n.getSexe()});		
+			model.addRow(new Object[] {n.getID(),n.getNom(), n.getPrenom(), n.getSexe()});		
 		}
-}
+	}
+	
+	public int getSize() {
+		int size = ListeJoueur.size();
+		return size;
+	}
 }
