@@ -1,7 +1,6 @@
 package ProjetNadia;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +29,6 @@ public interface BddTournoi {
 					e.printStackTrace();
 				} finally {
 					try {
-						cn.close();
 						ps.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -81,7 +79,6 @@ public interface BddTournoi {
 				return error;
 			} finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -135,7 +132,6 @@ public interface BddTournoi {
 				return error;
 			} finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -162,7 +158,6 @@ public interface BddTournoi {
 				return error;
 			} finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -172,8 +167,7 @@ public interface BddTournoi {
 			}
 			message = "tournoi supprimer, la fenetre va automatiquement se fermer";
 			return message;
-		}
-		
+		}		
 	}
 
 

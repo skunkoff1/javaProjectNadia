@@ -9,8 +9,7 @@ public class ListeJoueur {
 	
 	public ArrayList<Joueur> ListeJoueur = new ArrayList<Joueur>();
 	
-	public ListeJoueur() {
-		
+	public ListeJoueur() {		
 	}
 	
 	public void addJoueur(Joueur joueur) {

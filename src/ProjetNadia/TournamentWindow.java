@@ -7,8 +7,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.*;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 public class TournamentWindow extends JFrame{
 	
@@ -17,7 +15,6 @@ public class TournamentWindow extends JFrame{
 	private JComboBox sexField;
 	private JComboBox nameBox;
 	private int ID;
-	private String tournamentCode;
 	private JTextField yearField;
 	private JLabel nameLabel;
 	private JLabel yearLabel;
