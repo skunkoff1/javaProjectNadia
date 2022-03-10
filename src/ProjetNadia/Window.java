@@ -14,13 +14,18 @@ public class Window extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static JTable table;
+	private static JTable tablePlayer;
 	private static String choice;
-	private ListeJoueur liste = new ListeJoueur();
+	private static ListeJoueur liste = new ListeJoueur();
 	private JTextField searchField;
+	private JTextField textField;
+	static JTable tableTournoi;
 	
 	public Window() {
-		super("Projet Nadia");
+		super("Projet Nadia");		
+		this.setVisible(true);
+		BddConnection.connectBdd();
+		
 		getContentPane().setBackground(new Color(0, 0, 0));
 		setPreferredSize(new Dimension(1200, 800));
 		setSize(new Dimension(1200, 800));
@@ -39,27 +44,40 @@ public class Window extends JFrame {
 	                "ID", "Nom", "Prenom", "Sexe"
         });
 		
+		DefaultTableModel modelTournoi = new DefaultTableModel(
+	            new Object [][] {
+	            },
+	            new String [] {
+	                "Année","Nom","Type", "ID"
+        });
+		
 		String[] comboChoice = {"les deux" , "femme", "homme" };
 		
-		// Remplissage par défaut du tableau
-		liste = Bdd.GetPlayers("");
-		
-		JPanel playerTab = new JPanel();		
+		JPanel playerTab = new JPanel();				
 		playerTab.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		playerTab.setBackground(Color.BLACK);
 		container.addTab(" Joueur ", null, playerTab, null);
 		playerTab.setLayout(null);
 		
-		table = new JTable(model);
-		table.setFillsViewportHeight(true);
-		table.setForeground(Color.WHITE);
-		table.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		table.setBackground(Color.DARK_GRAY);		
-		table.setBounds(0, 0, 800, 400);
-		table.getColumn("ID").setCellEditor(new nullEditor(new JCheckBox()));
-		table.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
-		table.getColumn("Prenom").setCellEditor(new nullEditor(new JCheckBox()));
-		table.getColumn("Sexe").setCellEditor(new nullEditor(new JCheckBox()));
+		tablePlayer = new JTable(model);
+		tablePlayer.setFillsViewportHeight(true);
+		tablePlayer.setForeground(Color.WHITE);
+		tablePlayer.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		tablePlayer.setBackground(Color.DARK_GRAY);		
+		tablePlayer.setBounds(0, 0, 800, 400);
+		tablePlayer.getColumn("ID").setCellEditor(new nullEditor(new JCheckBox()));
+		tablePlayer.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
+		tablePlayer.getColumn("Prenom").setCellEditor(new nullEditor(new JCheckBox()));
+		tablePlayer.getColumn("Sexe").setCellEditor(new nullEditor(new JCheckBox()));
+		
+		if(!BddConnection.isConnected) {
+			ConnectionWindow cw = new ConnectionWindow();
+			cw.setVisible(true);
+		}
+		else {
+			liste = BddPlayer.GetPlayers("");
+			liste.fillTab(tablePlayer);
+		}
 		
 		JLabel errorLabel = new JLabel();
 		errorLabel.setOpaque(true);
@@ -71,16 +89,16 @@ public class Window extends JFrame {
 		errorLabel.setVisible(false);
 		playerTab.add(errorLabel);
 		
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(157, 197, 871, 600);
+		JScrollPane scrollPane = new JScrollPane(tablePlayer);
+		scrollPane.setBounds(158, 197, 870, 517);
 		playerTab.add(scrollPane);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		JComboBox comboBox = new JComboBox(comboChoice);
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				choice = (String) comboBox.getSelectedItem();
-				liste = Bdd.GetPlayers(choice);
-				liste.fillTab(table);
+				liste = BddPlayer.GetPlayers(choice);
+				liste.fillTab(tablePlayer);
 			}
 		});
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -97,7 +115,8 @@ public class Window extends JFrame {
 		JButton addPlayerButton = new JButton("<html><p style='text-align:center'>Ajouter<br>un joueur</p></html>");
 		addPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddPlayerWindow add = new AddPlayerWindow();
+				PlayerWindow add = new PlayerWindow("Ajouter un joueur");
+				add.setButton("ajouter");
 				add.setVisible(true);
 			}
 		});
@@ -108,17 +127,18 @@ public class Window extends JFrame {
 		JButton editPlayerButton = new JButton("<html><p style='text-align:center'>Editer<br>un joueur</p></html>");
 		editPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(table.getSelectedRow() == -1) {
+				if(tablePlayer.getSelectedRow() == -1) {
 					errorLabel.setText("Pour pouvoir modifier un joueur, veuillez en selectionner un");
 					errorLabel.setVisible(true);					
 				} else {
 					errorLabel.setVisible(false);
-					int ID = (int) model.getValueAt(table.getSelectedRow(), 0); 
-					String name = (String) model.getValueAt(table.getSelectedRow(), 1);
-					String firstName = (String) model.getValueAt(table.getSelectedRow(), 2);
-					String sex = (String) model.getValueAt(table.getSelectedRow(), 3);
-					ModifyPlayerWindow modify = new ModifyPlayerWindow();
+					int ID = (int) model.getValueAt(tablePlayer.getSelectedRow(), 0); 
+					String name = (String) model.getValueAt(tablePlayer.getSelectedRow(), 1);
+					String firstName = (String) model.getValueAt(tablePlayer.getSelectedRow(), 2);
+					String sex = (String) model.getValueAt(tablePlayer.getSelectedRow(), 3);
+					PlayerWindow modify = new PlayerWindow("éditer un joueur");
 					modify.setId(ID);
+					modify.setButton("modifier");
 					modify.setPlayerName(name);
 					modify.setPlayerFirstName(firstName);
 					modify.setPlayerSex(sex);
@@ -133,20 +153,22 @@ public class Window extends JFrame {
 		JButton deletePlayerButton = new JButton("<html><p style='text-align:center'>Supprimer<br>un joueur</p></html>");
 		deletePlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {			
-				if(table.getSelectedRow() == -1) {
+				if(tablePlayer.getSelectedRow() == -1) {
 					errorLabel.setText("Pour pouvoir supprimer un joueur, veuillez en selectionner un");
 					errorLabel.setVisible(true);					
 				} else {
 					errorLabel.setVisible(false);
-					int ID = (int) model.getValueAt(table.getSelectedRow(), 0); 
-					String name = (String) model.getValueAt(table.getSelectedRow(), 1);
-					String firstName = (String) model.getValueAt(table.getSelectedRow(), 2);
-					String sex = (String) model.getValueAt(table.getSelectedRow(), 3);
-					RemovePlayerWindow remove = new RemovePlayerWindow();
+					int ID = (int) model.getValueAt(tablePlayer.getSelectedRow(), 0); 
+					String name = (String) model.getValueAt(tablePlayer.getSelectedRow(), 1);
+					String firstName = (String) model.getValueAt(tablePlayer.getSelectedRow(), 2);
+					String sex = (String) model.getValueAt(tablePlayer.getSelectedRow(), 3);
+					PlayerWindow remove = new PlayerWindow("supprimer un joueur");					
+					remove.setButton("supprimer");
 					remove.setId(ID);
 					remove.setPlayerName(name);
 					remove.setPlayerFirstName(firstName);
 					remove.setPlayerSex(sex);
+					remove.setWindow("supprimer");
 					remove.setVisible(true);
 				}
 			}
@@ -154,20 +176,20 @@ public class Window extends JFrame {
 		deletePlayerButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		deletePlayerButton.setBounds(869, 66, 159, 56);
 		playerTab.add(deletePlayerButton);	
-		liste.fillTab(table);
-		
+				
 		searchField = new JTextField();
+		searchField.setBackground(Color.WHITE);
 		searchField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				errorLabel.setVisible(false);
 				String search = searchField.getText();
-				liste = Bdd.searchPlayer(search);
+				liste = BddPlayer.searchPlayer(search);
 				int size = liste.getSize();
 				if(size ==0) {
 					errorLabel.setVisible(true);
 					errorLabel.setText("Aucun joueur trouvé");
 				}
-				liste.fillTab(table);
+				liste.fillTab(tablePlayer);
 			}
 		});
 		
@@ -183,6 +205,126 @@ public class Window extends JFrame {
 		lblNewLabel_1.setBounds(199, 144, 120, 30);
 		playerTab.add(lblNewLabel_1);
 		
+		JPanel tournoiTab = new JPanel();
+		tournoiTab.setBackground(Color.BLACK);
+		tournoiTab.setForeground(Color.WHITE);
+		container.addTab(" Tournoi ", null, tournoiTab, null);
+		tournoiTab.setLayout(null);
+		
+		JLabel errorLabelTournoi = new JLabel("");
+		errorLabelTournoi.setVisible(false);
+		errorLabelTournoi.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		errorLabelTournoi.setBackground(Color.RED);
+		errorLabelTournoi.setForeground(Color.WHITE);
+		errorLabelTournoi.setOpaque(true);
+		errorLabelTournoi.setBounds(153, 11, 845, 46);
+		tournoiTab.add(errorLabelTournoi);		
+		
+		tableTournoi = new JTable(modelTournoi);
+		tableTournoi.setFillsViewportHeight(true);
+		tableTournoi.setForeground(Color.WHITE);
+		tableTournoi.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		tableTournoi.setBackground(Color.DARK_GRAY);	
+		tableTournoi.setBounds(0, 0, 800, 400);
+		tableTournoi.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
+		tableTournoi.getColumnModel().getColumn(3).setMinWidth(0);
+		tableTournoi.getColumnModel().getColumn(3).setMaxWidth(0);
+		tableTournoi.getColumnModel().getColumn(3).setWidth(0);
+		
+		JButton editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
+		editTournoiBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableTournoi.getSelectedRow() == -1) {
+					errorLabelTournoi.setText("Pour pouvoir modifier un tournoi, veuillez en selectionner un");
+					errorLabelTournoi.setVisible(true);					
+				} else {
+					errorLabelTournoi.setVisible(false);
+					int ID = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3 );
+					int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);
+					String name = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),1);
+					String sex = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),2);
+					TournamentWindow add = new TournamentWindow("Editer un tournoi", "Editer un tournoi");
+					add.setButton("modifier");
+					add.setId(ID);
+					add.setTournamentName(name);
+					add.setTournamentSex(sex);
+					add.setTournamentYear(year);
+					add.setVisible(true);					
+				}	
+			}
+		});
+		editTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		editTournoiBtn.setBounds(572, 70, 199, 65);
+		tournoiTab.add(editTournoiBtn);
+		
+		JButton removeTournoiBtn = new JButton("<html><p style='text-align:center'>Supprimer <br> un tournoi</p></html>");
+		removeTournoiBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableTournoi.getSelectedRow() == -1) {
+					errorLabelTournoi.setText("Pour pouvoir supprimer un tournoi, veuillez en selectionner un");
+					errorLabelTournoi.setVisible(true);					
+				} else {
+					errorLabelTournoi.setVisible(false);
+					int ID = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3 );
+					int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);
+					String name = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),1);
+					String sex = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),2);
+					TournamentWindow add = new TournamentWindow("Supprimer un tournoi", "Supprimer un tournoi");
+					add.setButton("supprimer");					
+					add.setId(ID);
+					add.setTournamentName(name);
+					add.setTournamentSex(sex);
+					add.setTournamentYear(year);
+					add.setWindow("supprimer");
+					add.setVisible(true);
+				}
+			}
+		});
+		removeTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		removeTournoiBtn.setBounds(799, 69, 199, 66);
+		tournoiTab.add(removeTournoiBtn);
+		
+		textField = new JTextField();
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		textField.setBounds(362, 145, 636, 32);
+		tournoiTab.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel_6 = new JLabel("Rechercher :");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_6.setForeground(Color.WHITE);
+		lblNewLabel_6.setBounds(153, 146, 199, 31);
+		tournoiTab.add(lblNewLabel_6);		
+		
+		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
+		addTournoiBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TournamentWindow add = new TournamentWindow("Ajouter un tournoi", "Ajouter un tournoi");
+				add.setButton("ajouter");
+				add.setVisible(true);
+			}
+		});
+		addTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		addTournoiBtn.setBounds(358, 69, 188, 67);
+		tournoiTab.add(addTournoiBtn);
+		
+		JScrollPane scrollPane_1 = new JScrollPane(tableTournoi);
+		scrollPane_1.setForeground(Color.WHITE);
+		scrollPane_1.setBackground(Color.DARK_GRAY);
+		scrollPane_1.setBounds(153, 210, 845, 504);
+		tournoiTab.add(scrollPane_1);
+		
+		JButton displayTournoiBtn = new JButton("<html><p style='text-align:center'>Afficher <br> les tournois</p></html>");
+		displayTournoiBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BddTournoi.getTournament(tableTournoi);
+			}
+		});
+		displayTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		displayTournoiBtn.setBounds(153, 68, 188, 67);
+		tournoiTab.add(displayTournoiBtn);
+		
 		JPanel matchTab = new JPanel();
 		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		container.addTab(" Match ", null, matchTab, null);
@@ -191,9 +333,6 @@ public class Window extends JFrame {
 		JButton btnNewButton_1 = new JButton("New button");
 		btnNewButton_1.setBounds(47, 54, 269, 135);
 		matchTab.add(btnNewButton_1);
-		
-		JPanel tab3 = new JPanel();
-		container.addTab(" Chais Pas ", null, tab3, null);
 		
 		JPanel optionTab = new JPanel();
 		optionTab.setBackground(Color.BLACK);
@@ -241,9 +380,7 @@ public class Window extends JFrame {
 		lblNewLabel_2_1.setBorder(new LineBorder(new Color(192, 192, 192), 2));
 		lblNewLabel_2_1.setAlignmentX(0.5f);
 		lblNewLabel_2_1.setBounds(641, 11, 347, 41);
-		optionTab.add(lblNewLabel_2_1);
-		
-		this.setVisible(true);
+		optionTab.add(lblNewLabel_2_1);		
 	}
 
 	public void setListe(ListeJoueur liste) {
@@ -251,15 +388,24 @@ public class Window extends JFrame {
 	}
 
 	public static JTable getTable() {
-		return table;
+		return tablePlayer;
 	}
 	
 	public void setTable(JTable table) {
-		this.table = table;
+		this.tablePlayer = table;
 	}        
 
 	public static String getChoice() {
 		return choice;
+	}
+	
+	public static void getPlayers() {
+		liste = BddPlayer.GetPlayers("");
+		liste.fillTab(tablePlayer);
+	}
+	
+	public void closeWindow() {
+		this.dispose();
 	}
 	
 	private class nullEditor extends DefaultCellEditor {

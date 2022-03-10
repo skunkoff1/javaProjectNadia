@@ -8,13 +8,10 @@ import java.sql.SQLException;
 
 
 
-public interface Bdd {	
+public interface BddPlayer {	
 	
 	public static ListeJoueur GetPlayers(String choice) {
-		String url = BddConnection.getUrl();
-		String login = BddConnection.getLogin();
-		String password = BddConnection.getPassword();
-		Connection cn = null;
+		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;
 		ResultSet rs =null;
 		ListeJoueur liste = new ListeJoueur();	
@@ -22,8 +19,7 @@ public interface Bdd {
 			choice = "";
 		}
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, password);
+			
 			if(choice.equals("homme")) {
 				ps = cn.prepareStatement("SELECT * FROM joueur WHERE SEXE='H' ");
 			}else if(choice.equals("femme")) {
@@ -38,13 +34,9 @@ public interface Bdd {
 				}			
 			}catch (SQLException e){
 				e.printStackTrace();
-			}
-			catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+			}			
 			finally {
 				try {
-					cn.close();
 					ps.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -54,16 +46,11 @@ public interface Bdd {
 	}
 	
 	public static String addPlayer(String name, String firstName, String sex) {
-		String url = BddConnection.getUrl();
-		String login = BddConnection.getLogin();
-		String password = BddConnection.getPassword();		
 		String message;
 		String error;
-		Connection cn = null;
+		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;		
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, password);
 			ps = cn.prepareStatement("INSERT INTO joueur(NOM, PRENOM, SEXE) VALUES(?,?,?)");	
 			ps.setString(1, name);
 			ps.setString(2, firstName);
@@ -80,14 +67,9 @@ public interface Bdd {
 				error = "Un problème est survenu" + e;
 				return error;
 			}
-				catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				error = "Un problème est survenu" + e;
-				return error;
-			}
+				
 			finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -100,16 +82,11 @@ public interface Bdd {
 	}
 	
 	public static String updatePlayer(int ID, String name, String firstName, String sex) {
-		String url = BddConnection.getUrl();
-		String login = BddConnection.getLogin();
-		String password = BddConnection.getPassword();	
 		String message;
 		String error;
-		Connection cn = null;
+		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;		
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, password);
 			ps = cn.prepareStatement("UPDATE joueur SET NOM=?, PRENOM=?, SEXE=? WHERE ID=?");	
 			ps.setString(1, name);
 			ps.setString(2, firstName);
@@ -127,14 +104,8 @@ public interface Bdd {
 				error = "Un problème est survenu" + e;
 				return error;
 			}
-				catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				error = "Un problème est survenu" + e;
-				return error;
-			}
 			finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -147,16 +118,11 @@ public interface Bdd {
 	}
 	
 	public static String removePlayer(int ID) {
-		String url = BddConnection.getUrl();
-		String login = BddConnection.getLogin();
-		String password = BddConnection.getPassword();	
 		String message;
 		String error;
-		Connection cn = null;
+		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;		
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, password);
 			ps = cn.prepareStatement("DELETE FROM joueur WHERE ID=?");	
 			ps.setInt(1, ID);
 			ps.executeUpdate();
@@ -166,14 +132,8 @@ public interface Bdd {
 				error = "Un problème est survenu" + e;
 				return error;
 			}
-				catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				error = "Un problème est survenu" + e;
-				return error;
-			}
 			finally {
 				try {
-					cn.close();
 					ps.close();					
 				} catch (SQLException e) {
 					e.printStackTrace();
