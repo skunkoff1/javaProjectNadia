@@ -32,16 +32,15 @@ public interface BddPlayer {
 				Joueur joueur = new Joueur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 				liste.addJoueur(joueur);				
 				}			
-			}catch (SQLException e){
+		}catch (SQLException e){
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+			} catch (SQLException e) {
 				e.printStackTrace();
-			}			
-			finally {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 			}
+		}
 		return liste;		
 	}
 	
@@ -60,23 +59,20 @@ public interface BddPlayer {
 				sex = "H";
 			}
 			ps.setString(3, sex);
-			ps.executeUpdate();
-					
-			}catch (SQLException e){
+			ps.executeUpdate();					
+		}catch (SQLException e){
+			e.printStackTrace();
+			error = "Un problème est survenu" + e;
+			return error;
+		} finally {
+			try {
+				ps.close();					
+			} catch (SQLException e) {
 				e.printStackTrace();
 				error = "Un problème est survenu" + e;
 				return error;
-			}
-				
-			finally {
-				try {
-					ps.close();					
-				} catch (SQLException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}	
-			}
+			}	
+		}
 		message = "joueur ajouté, la fenetre va automatiquement se fermer";
 		return message;
 	}
@@ -97,22 +93,20 @@ public interface BddPlayer {
 			}
 			ps.setString(3, sex);
 			ps.setInt(4, ID);
-			ps.executeUpdate();
-					
-			}catch (SQLException e){
+			ps.executeUpdate();					
+		}catch (SQLException e){
+			e.printStackTrace();
+			error = "Un problème est survenu" + e;
+			return error;
+		} finally {
+			try {
+				ps.close();					
+			} catch (SQLException e) {
 				e.printStackTrace();
 				error = "Un problème est survenu" + e;
 				return error;
-			}
-			finally {
-				try {
-					ps.close();					
-				} catch (SQLException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}	
-			}
+			}	
+		}
 		message = "joueur modifié, la fenetre va automatiquement se fermer";
 		return message;
 	}
@@ -125,58 +119,46 @@ public interface BddPlayer {
 		try {
 			ps = cn.prepareStatement("DELETE FROM joueur WHERE ID=?");	
 			ps.setInt(1, ID);
-			ps.executeUpdate();
-					
-			}catch (SQLException e){
+			ps.executeUpdate();					
+		}catch (SQLException e){
+			e.printStackTrace();
+			error = "Un problème est survenu" + e;
+			return error;
+		} finally {
+			try {
+				ps.close();					
+			} catch (SQLException e) {
 				e.printStackTrace();
 				error = "Un problème est survenu" + e;
 				return error;
-			}
-			finally {
-				try {
-					ps.close();					
-				} catch (SQLException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}	
-			}
+			}	
+		}
 		message = "joueur supprimé, la fenetre va automatiquement se fermer";
 		return message;
 	}
 	
 	public static ListeJoueur searchPlayer(String search) {
-		String url = BddConnection.getUrl();
-		String login = BddConnection.getLogin();
-		String password = BddConnection.getPassword();	
-		Connection cn = null;
+		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;	
 		ResultSet rs =null;
 		ListeJoueur liste = new ListeJoueur();
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, password);
 			ps = cn.prepareStatement("SELECT * FROM joueur WHERE NOM LIKE '%" + search +"%' OR PRENOM LIKE '%"+search+"%'");
 			rs = ps.executeQuery();
 			while(rs.next()) {				
 				Joueur joueur = new Joueur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 				liste.addJoueur(joueur);				
-				}	
-					
-			}catch (SQLException e){
+			}						
+		}catch (SQLException e){
+			e.printStackTrace();
+		} finally {
+			try {
+				cn.close();
+				ps.close();					
+			} catch (SQLException e) {
 				e.printStackTrace();
-			}
-				catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			finally {
-				try {
-					cn.close();
-					ps.close();					
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}	
-			}
+			}	
+		}
 		return liste;
 	}
 }

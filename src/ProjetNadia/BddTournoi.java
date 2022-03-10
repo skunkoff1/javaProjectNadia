@@ -11,10 +11,7 @@ import javax.swing.table.DefaultTableModel;
 public interface BddTournoi {
 
 		public static void getTournament(JTable table) {
-			String url = BddConnection.getUrl();
-			String login = BddConnection.getLogin();
-			String password = BddConnection.getPassword();
-			Connection cn = null;
+			Connection cn = BddConnection.getCn();
 			PreparedStatement ps = null;
 			ResultSet rs =null;
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -24,8 +21,6 @@ public interface BddTournoi {
 			}
 			
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				cn = DriverManager.getConnection(url, login, password);
 				ps = cn.prepareStatement("SELECT epreuve.ANNEE, epreuve.TYPE_EPREUVE, tournoi.NOM, epreuve.ID FROM tennis.epreuve, tennis.tournoi WHERE epreuve.ID_TOURNOI = tournoi.ID");			
 				rs = ps.executeQuery();
 				while(rs.next()) {	
@@ -33,11 +28,7 @@ public interface BddTournoi {
 					}			
 				}catch (SQLException e){
 					e.printStackTrace();
-				}
-				catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-				finally {
+				} finally {
 					try {
 						cn.close();
 						ps.close();
@@ -47,10 +38,7 @@ public interface BddTournoi {
 				}		
 		}
 		
-		public static String addTournament(String name, String year, String sex) {
-			String url = BddConnection.getUrl();
-			String login = BddConnection.getLogin();
-			String password = BddConnection.getPassword();		
+		public static String addTournament(String name, String year, String sex) {				
 			String message;
 			String error;
 			if(sex.equals("femme")) {
@@ -60,12 +48,10 @@ public interface BddTournoi {
 			}
 			int newYear = Integer.parseInt(year);
 			int ID=0;
-			Connection cn = null;
+			Connection cn = BddConnection.getCn();
 			PreparedStatement ps = null;	
 			ResultSet rs = null;
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				cn = DriverManager.getConnection(url, login, password);
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
 				rs = ps.executeQuery();
@@ -88,46 +74,34 @@ public interface BddTournoi {
 					ps.executeUpdate();
 					ps.close();
 					
-				}
-						
-				}catch (SQLException e){
+				}						
+			}catch (SQLException e){
+				e.printStackTrace();
+				error = "Un problème est survenu" + e;
+				return error;
+			} finally {
+				try {
+					cn.close();
+					ps.close();					
+				} catch (SQLException e) {
 					e.printStackTrace();
 					error = "Un problème est survenu" + e;
 					return error;
-				}
-					catch (ClassNotFoundException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}
-				finally {
-					try {
-						cn.close();
-						ps.close();					
-					} catch (SQLException e) {
-						e.printStackTrace();
-						error = "Un problème est survenu" + e;
-						return error;
-					}	
-				}
+				}	
+			}
 			message = "tournoi ajouté, la fenetre va automatiquement se fermer";
 			return message;
 		}
 		
-		public static String updateTournament(int ID, String name, String year, String sex) {
-			String url = BddConnection.getUrl();
-			String login = BddConnection.getLogin();
-			String password = BddConnection.getPassword();	
+		public static String updateTournament(int ID, String name, String year, String sex) {			
 			String message;
 			String error;
 			int newYear = Integer.parseInt(year);
 			int newId = 0;
-			Connection cn = null;
+			Connection cn = BddConnection.getCn();
 			PreparedStatement ps = null;	
 			ResultSet rs;
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				cn = DriverManager.getConnection(url, login, password);
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
 				rs = ps.executeQuery();
@@ -154,67 +128,48 @@ public interface BddTournoi {
 					ps.setInt(4, ID);
 					ps.setInt(3, newId);
 					ps.executeUpdate();
-				}
-						
-				}catch (SQLException e){
+				}					
+			}catch (SQLException e){
+				e.printStackTrace();
+				error = "Un problème est survenu" + e;
+				return error;
+			} finally {
+				try {
+					cn.close();
+					ps.close();					
+				} catch (SQLException e) {
 					e.printStackTrace();
 					error = "Un problème est survenu" + e;
 					return error;
-				}
-					catch (ClassNotFoundException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}
-				finally {
-					try {
-						cn.close();
-						ps.close();					
-					} catch (SQLException e) {
-						e.printStackTrace();
-						error = "Un problème est survenu" + e;
-						return error;
-					}	
-				}
+				}	
+			}
 			message = "tournoi modifié, la fenetre va automatiquement se fermer";
 			return message;
 		}
 		
 		public static String removeTournament(int ID) {
-			String url = BddConnection.getUrl();
-			String login = BddConnection.getLogin();
-			String password = BddConnection.getPassword();	
 			String message;
 			String error;
-			Connection cn = null;
+			Connection cn = BddConnection.getCn();
 			PreparedStatement ps = null;	
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				cn = DriverManager.getConnection(url, login, password);
 				ps = cn.prepareStatement("DELETE FROM epreuve WHERE ID = ?");	
 				ps.setInt(1, ID);
-				ps.executeUpdate();
-						
-				}catch (SQLException e){
+				ps.executeUpdate();						
+			}catch (SQLException e){
+				e.printStackTrace();
+				error = "Un problème est survenu" + e;
+				return error;
+			} finally {
+				try {
+					cn.close();
+					ps.close();					
+				} catch (SQLException e) {
 					e.printStackTrace();
 					error = "Un problème est survenu" + e;
 					return error;
-				}
-					catch (ClassNotFoundException e) {
-					e.printStackTrace();
-					error = "Un problème est survenu" + e;
-					return error;
-				}
-				finally {
-					try {
-						cn.close();
-						ps.close();					
-					} catch (SQLException e) {
-						e.printStackTrace();
-						error = "Un problème est survenu" + e;
-						return error;
-					}	
-				}
+				}	
+			}
 			message = "tournoi supprimer, la fenetre va automatiquement se fermer";
 			return message;
 		}

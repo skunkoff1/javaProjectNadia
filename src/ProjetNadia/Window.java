@@ -69,16 +69,7 @@ public class Window extends JFrame {
 		tablePlayer.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumn("Prenom").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumn("Sexe").setCellEditor(new nullEditor(new JCheckBox()));
-		
-		if(!BddConnection.isConnected) {
-			ConnectionWindow cw = new ConnectionWindow();
-			cw.setVisible(true);
-		}
-		else {
-			liste = BddPlayer.GetPlayers("");
-			liste.fillTab(tablePlayer);
-		}
-		
+					
 		JLabel errorLabel = new JLabel();
 		errorLabel.setOpaque(true);
 		errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -230,6 +221,16 @@ public class Window extends JFrame {
 		tableTournoi.getColumnModel().getColumn(3).setMinWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setMaxWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setWidth(0);
+		
+		if(!BddConnection.isConnected) {
+			ConnectionWindow cw = new ConnectionWindow();
+			cw.setVisible(true);
+		}
+		else {
+			liste = BddPlayer.GetPlayers("");
+			liste.fillTab(tablePlayer);
+			BddTournoi.getTournament(tableTournoi);
+		}
 		
 		JButton editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
 		editTournoiBtn.addActionListener(new ActionListener() {
