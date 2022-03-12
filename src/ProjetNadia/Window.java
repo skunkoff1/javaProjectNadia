@@ -21,9 +21,9 @@ public class Window extends JFrame {
 	private static ListeJoueur liste = new ListeJoueur();
 	private JTextField searchField;
 	private JTextField searchTournoi;
-	static JTable tableTournoi;
+	public static JTable tableTournoi;
 	private static JComboBox yearBox;
-	private JTable tableEpreuve;
+	private static JTable tableEpreuve;
 	
 	public Window() {
 		
@@ -357,10 +357,18 @@ public class Window extends JFrame {
 		epreuveTab.add(lblNewLabel_5_2);
 		
 		JComboBox sexBoxEpreuve = new JComboBox(typeChoice);
+		sexBoxEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		sexBoxEpreuve.setBounds(658, 28, 170, 32);
 		epreuveTab.add(sexBoxEpreuve);
 		
 		JButton btnNewButton = new JButton("Rechercher");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String year = (String) yearBox.getSelectedItem();
+				String sex = (String) sexBoxEpreuve.getSelectedItem();
+//				BddEpreuve.getPlayers(year, sex);
+			}
+		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton.setBounds(901, 28, 177, 32);
 		epreuveTab.add(btnNewButton);
