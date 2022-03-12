@@ -1,7 +1,10 @@
 package ProjetNadia;
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.EventObject;
@@ -10,6 +13,8 @@ import java.awt.event.ItemEvent;
 import javax.swing.border.LineBorder;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Window extends JFrame {
 	/**
@@ -69,7 +74,7 @@ public class Window extends JFrame {
 	            },
 	            new String [] {
 	                "Nom","Prénom", "Tournoi", "Statut"
-        });
+        });		
 		
 		/*======================= CHOIX POUR LES COMBOBOX =======================*/
 		String[] comboChoice = {"les deux" , "femme", "homme" };		
@@ -88,16 +93,13 @@ public class Window extends JFrame {
 		tablePlayer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tablePlayer.setBackground(Color.DARK_GRAY);		
 		tablePlayer.setBounds(0, 0, 800, 400);
-		tablePlayer.getColumn("ID").setCellEditor(new nullEditor(new JCheckBox()));
-		tablePlayer.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
-		tablePlayer.getColumn("Prenom").setCellEditor(new nullEditor(new JCheckBox()));
-		tablePlayer.getColumn("Sexe").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumnModel().getColumn(0).setWidth(50);	
 		tablePlayer.getColumnModel().getColumn(0).setMinWidth(50);	
 		tablePlayer.getColumnModel().getColumn(0).setMaxWidth(50);	
 		tablePlayer.getColumnModel().getColumn(3).setWidth(50);	
 		tablePlayer.getColumnModel().getColumn(3).setMinWidth(50);	
 		tablePlayer.getColumnModel().getColumn(3).setMaxWidth(50);	
+		renderTable(tablePlayer);
 		tablePlayer.setRowHeight(20);
 					
 		JLabel errorLabel = new JLabel();
@@ -255,7 +257,16 @@ public class Window extends JFrame {
 		finalText.setBounds(849, 458, 270, 46);
 		tournoiTab.add(finalText);
 		
-		tableTournoi = new JTable(modelTournoi);
+		tableTournoi = new JTable(modelTournoi);		
+		tableTournoi.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == 40 || e.getKeyCode() == 38 || e.getKeyCode() == 10) {
+					int ID = (int)modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3);
+					BddTournoi.getPlayers(ID, winnerText, finalText);					
+				}
+			}
+		});
 		tableTournoi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -268,9 +279,6 @@ public class Window extends JFrame {
 		tableTournoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableTournoi.setBackground(Color.DARK_GRAY);	
 		tableTournoi.setBounds(0, 0, 800, 400);
-		tableTournoi.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
-		tableTournoi.getColumn("Année").setCellEditor(new nullEditor(new JCheckBox()));
-		tableTournoi.getColumn("Type d'épreuve").setCellEditor(new nullEditor(new JCheckBox()));
 		tableTournoi.getColumnModel().getColumn(3).setMinWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setMaxWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setWidth(0);
@@ -280,6 +288,7 @@ public class Window extends JFrame {
 		tableTournoi.getColumnModel().getColumn(2).setMinWidth(120);
 		tableTournoi.getColumnModel().getColumn(2).setMaxWidth(120);
 		tableTournoi.getColumnModel().getColumn(2).setWidth(120);	
+		renderTable(tableTournoi);
 		tableTournoi.setRowHeight(20);
 		
 		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
@@ -386,7 +395,7 @@ public class Window extends JFrame {
 		finalLabel.setBounds(813, 401, 208, 46);
 		tournoiTab.add(finalLabel);
 				
-		JLabel lblNewLabel_7 = new JLabel("<html><p>Cliquer sur un tournoi<br> pour afficher les infos</p></html>");
+		JLabel lblNewLabel_7 = new JLabel("<html><p>Cliquer sur un tournoi<br>pu parcourez le tableau<br> pour afficher les infos</p></html>");
 		lblNewLabel_7.setForeground(Color.WHITE);
 		lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_7.setBounds(813, 210, 199, 75);
@@ -437,9 +446,7 @@ public class Window extends JFrame {
 		tableEpreuve.setForeground(Color.WHITE);
 		tableEpreuve.setBackground(Color.DARK_GRAY);
 		tableEpreuve.setFillsViewportHeight(true);
-		tableEpreuve.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
-		tableEpreuve.getColumn("Prénom").setCellEditor(new nullEditor(new JCheckBox()));
-		tableEpreuve.getColumn("Tournoi").setCellEditor(new nullEditor(new JCheckBox()));
+		renderTable(tableEpreuve);
 		tableEpreuve.setRowHeight(20);
 		
 		JScrollPane scrollPane_2 = new JScrollPane(tableEpreuve);
@@ -518,19 +525,10 @@ public class Window extends JFrame {
 		}
 	}
 
-	
-	public void setListe(ListeJoueur liste) {
-		this.liste = liste;
-	}
-
 	public static JTable getTable() {
 		return tablePlayer;
 	}
 	
-	public void setTable(JTable table) {
-		this.tablePlayer = table;
-	}        
-
 	public static String getChoice() {
 		return choice;
 	}
@@ -540,6 +538,19 @@ public class Window extends JFrame {
 		liste.fillTab(tablePlayer);
 		BddTournoi.getTournament(tableTournoi);
 		BddEpreuve.getYear(yearBox);
+	}
+	/*======== FONCTION POUR LE RENDU DU TABLEAU + CELLULES NON EDITABLES ========*/
+	public void renderTable(JTable table) {
+		
+		/*= MODELE DE RENDU DES CELLULES DU TABLEAU =*/	
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		TableModel model = table.getModel();
+		
+		for(int i=0; i<model.getColumnCount(); i++) {
+			table.getColumnModel().getColumn(i).setCellEditor(new nullEditor(new JCheckBox()));
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
 	}
 	
 	/*======================= FONCTION CLOSE WINDOW =====================*/

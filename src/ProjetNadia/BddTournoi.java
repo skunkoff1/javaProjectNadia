@@ -53,6 +53,7 @@ public interface BddTournoi {
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
 				rs = ps.executeQuery();
+				ps.close();
 				boolean empty = true;
 				while( rs.next() ) {
 				    //ResultSet processing here
@@ -102,6 +103,7 @@ public interface BddTournoi {
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
 				rs = ps.executeQuery();
+				ps.close();
 				boolean empty = true;
 				while( rs.next() ) {
 				    //ResultSet processing here
