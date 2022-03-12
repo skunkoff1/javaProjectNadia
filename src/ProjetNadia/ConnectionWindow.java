@@ -78,7 +78,7 @@ public class ConnectionWindow extends JFrame{
 				BddConnection.setLogin(nameField.getText());
 				BddConnection.setPassword(passwordField.getText());
 				BddConnection.connectBdd();
-				Window.getPlayers();
+				Window.getDatas();
 				closeWindow();
 			}
 		});

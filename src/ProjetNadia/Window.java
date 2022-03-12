@@ -14,19 +14,24 @@ public class Window extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/* ====================== ATTRIBUTS ==========================*/
 	private static JTable tablePlayer;
 	private static String choice;
 	private static ListeJoueur liste = new ListeJoueur();
 	private JTextField searchField;
-	private JTextField textField;
+	private JTextField searchTournoi;
 	static JTable tableTournoi;
+	private static JComboBox yearBox;
+	private JTable tableEpreuve;
 	
 	public Window() {
+		
+		/* ================== PROPRIETES GENERALES DE LA FENETRE ======================*/
 		super("Projet Nadia");		
 		this.setVisible(true);
-		BddConnection.connectBdd();
-		
-		getContentPane().setBackground(new Color(0, 0, 0));
+				
+		getContentPane().setBackground(new Color(40, 40, 40));
 		setPreferredSize(new Dimension(1200, 800));
 		setSize(new Dimension(1200, 800));
 		setResizable(false);
@@ -36,7 +41,9 @@ public class Window extends JFrame {
 		JTabbedPane container = new JTabbedPane(JTabbedPane.TOP);
 		container.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		getContentPane().add(container, "name_19108795320400");
-				
+		
+		/*================ MODELES DES TABLEAUX ===========================*/
+ 				
 		DefaultTableModel model = new DefaultTableModel(
 	            new Object [][] {
 	            },
@@ -51,11 +58,21 @@ public class Window extends JFrame {
 	                "Année","Nom","Type", "ID"
         });
 		
-		String[] comboChoice = {"les deux" , "femme", "homme" };
+		DefaultTableModel modelEpreuve = new DefaultTableModel(
+	            new Object [][] {
+	            },
+	            new String [] {
+	                "Nom","Prénom", "Tournoi"
+        });
 		
+		/*======================= CHOIX POUR LES COMBOBOX =======================*/
+		String[] comboChoice = {"les deux" , "femme", "homme" };		
+		String[] typeChoice = {"femme", "homme"};
+		
+		/*============================ TAB JOUEUR ===============================*/		
 		JPanel playerTab = new JPanel();				
 		playerTab.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		playerTab.setBackground(Color.BLACK);
+		playerTab.setBackground(new Color(40, 40, 40));
 		container.addTab(" Joueur ", null, playerTab, null);
 		playerTab.setLayout(null);
 		
@@ -196,8 +213,9 @@ public class Window extends JFrame {
 		lblNewLabel_1.setBounds(199, 144, 120, 30);
 		playerTab.add(lblNewLabel_1);
 		
+		/*=========================== TAB TOUNROI ==================================*/
 		JPanel tournoiTab = new JPanel();
-		tournoiTab.setBackground(Color.BLACK);
+		tournoiTab.setBackground(new Color(40, 40, 40));
 		tournoiTab.setForeground(Color.WHITE);
 		container.addTab(" Tournoi ", null, tournoiTab, null);
 		tournoiTab.setLayout(null);
@@ -218,19 +236,23 @@ public class Window extends JFrame {
 		tableTournoi.setBackground(Color.DARK_GRAY);	
 		tableTournoi.setBounds(0, 0, 800, 400);
 		tableTournoi.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
+		tableTournoi.getColumn("Annee").setCellEditor(new nullEditor(new JCheckBox()));
+		tableTournoi.getColumn("Type").setCellEditor(new nullEditor(new JCheckBox()));
 		tableTournoi.getColumnModel().getColumn(3).setMinWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setMaxWidth(0);
-		tableTournoi.getColumnModel().getColumn(3).setWidth(0);
-		
-		if(!BddConnection.isConnected) {
-			ConnectionWindow cw = new ConnectionWindow();
-			cw.setVisible(true);
-		}
-		else {
-			liste = BddPlayer.GetPlayers("");
-			liste.fillTab(tablePlayer);
-			BddTournoi.getTournament(tableTournoi);
-		}
+		tableTournoi.getColumnModel().getColumn(3).setWidth(0);				
+
+		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
+		addTournoiBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TournamentWindow add = new TournamentWindow("Ajouter un tournoi", "Ajouter un tournoi");
+				add.setButton("ajouter");
+				add.setVisible(true);
+			}
+		});
+		addTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		addTournoiBtn.setBounds(153, 68, 188, 67);
+		tournoiTab.add(addTournoiBtn);
 		
 		JButton editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
 		editTournoiBtn.addActionListener(new ActionListener() {
@@ -255,7 +277,7 @@ public class Window extends JFrame {
 			}
 		});
 		editTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		editTournoiBtn.setBounds(572, 70, 199, 65);
+		editTournoiBtn.setBounds(470, 68, 199, 65);
 		tournoiTab.add(editTournoiBtn);
 		
 		JButton removeTournoiBtn = new JButton("<html><p style='text-align:center'>Supprimer <br> un tournoi</p></html>");
@@ -285,11 +307,19 @@ public class Window extends JFrame {
 		removeTournoiBtn.setBounds(799, 69, 199, 66);
 		tournoiTab.add(removeTournoiBtn);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textField.setBounds(362, 145, 636, 32);
-		tournoiTab.add(textField);
-		textField.setColumns(10);
+		searchTournoi = new JTextField();
+		searchTournoi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("wesh");
+				errorLabelTournoi.setVisible(false);
+				String search = searchTournoi.getText();
+				BddTournoi.searchTournament(search, tableTournoi);
+			}
+		});
+		searchTournoi.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		searchTournoi.setBounds(362, 145, 636, 32);
+		tournoiTab.add(searchTournoi);
+		searchTournoi.setColumns(10);
 		
 		JLabel lblNewLabel_6 = new JLabel("Rechercher :");
 		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
@@ -297,35 +327,57 @@ public class Window extends JFrame {
 		lblNewLabel_6.setForeground(Color.WHITE);
 		lblNewLabel_6.setBounds(153, 146, 199, 31);
 		tournoiTab.add(lblNewLabel_6);		
-		
-		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
-		addTournoiBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TournamentWindow add = new TournamentWindow("Ajouter un tournoi", "Ajouter un tournoi");
-				add.setButton("ajouter");
-				add.setVisible(true);
-			}
-		});
-		addTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		addTournoiBtn.setBounds(358, 69, 188, 67);
-		tournoiTab.add(addTournoiBtn);
-		
+				
 		JScrollPane scrollPane_1 = new JScrollPane(tableTournoi);
 		scrollPane_1.setForeground(Color.WHITE);
 		scrollPane_1.setBackground(Color.DARK_GRAY);
 		scrollPane_1.setBounds(153, 210, 845, 504);
 		tournoiTab.add(scrollPane_1);
 		
-		JButton displayTournoiBtn = new JButton("<html><p style='text-align:center'>Afficher <br> les tournois</p></html>");
-		displayTournoiBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				BddTournoi.getTournament(tableTournoi);
-			}
-		});
-		displayTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		displayTournoiBtn.setBounds(153, 68, 188, 67);
-		tournoiTab.add(displayTournoiBtn);
+		/*======================== TAB EPREUVE ==============================================*/
+		JPanel epreuveTab = new JPanel();
+		epreuveTab.setBackground(new Color(40, 40, 40));
+		container.addTab(" Epreuve ", null, epreuveTab, null);
+		epreuveTab.setLayout(null);
 		
+		JLabel lblNewLabel_5 = new JLabel("Ann\u00E9e :");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_5.setForeground(Color.WHITE);
+		lblNewLabel_5.setBounds(131, 28, 84, 32);
+		epreuveTab.add(lblNewLabel_5);
+		
+		yearBox = new JComboBox();
+		yearBox.setBounds(238, 28, 170, 32);
+		epreuveTab.add(yearBox);
+		
+		JLabel lblNewLabel_5_2 = new JLabel("Type d'\u00E9preuve :");
+		lblNewLabel_5_2.setForeground(Color.WHITE);
+		lblNewLabel_5_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_5_2.setBounds(472, 28, 163, 32);
+		epreuveTab.add(lblNewLabel_5_2);
+		
+		JComboBox sexBoxEpreuve = new JComboBox(typeChoice);
+		sexBoxEpreuve.setBounds(658, 28, 170, 32);
+		epreuveTab.add(sexBoxEpreuve);
+		
+		JButton btnNewButton = new JButton("Rechercher");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewButton.setBounds(901, 28, 177, 32);
+		epreuveTab.add(btnNewButton);
+
+		tableEpreuve = new JTable(modelEpreuve);
+		tableEpreuve.setForeground(Color.WHITE);
+		tableEpreuve.setBackground(Color.DARK_GRAY);
+		tableEpreuve.setFillsViewportHeight(true);
+		tableEpreuve.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
+		tableEpreuve.getColumn("Prénom").setCellEditor(new nullEditor(new JCheckBox()));
+		tableEpreuve.getColumn("Tournoi").setCellEditor(new nullEditor(new JCheckBox()));
+		
+		JScrollPane scrollPane_2 = new JScrollPane(tableEpreuve);
+		scrollPane_2.setBounds(131, 141, 947, 573);
+		epreuveTab.add(scrollPane_2);
+				
+		/*=============================== TAB MATCH ======================================*/
 		JPanel matchTab = new JPanel();
 		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		container.addTab(" Match ", null, matchTab, null);
@@ -335,8 +387,9 @@ public class Window extends JFrame {
 		btnNewButton_1.setBounds(47, 54, 269, 135);
 		matchTab.add(btnNewButton_1);
 		
+		/*=========================== TAB OPTION ========================================*/
 		JPanel optionTab = new JPanel();
-		optionTab.setBackground(Color.BLACK);
+		optionTab.setBackground(new Color(40, 40, 40));
 		container.addTab(" Options ", null, optionTab, null);
 		optionTab.setLayout(null);
 		
@@ -381,9 +434,22 @@ public class Window extends JFrame {
 		lblNewLabel_2_1.setBorder(new LineBorder(new Color(192, 192, 192), 2));
 		lblNewLabel_2_1.setAlignmentX(0.5f);
 		lblNewLabel_2_1.setBounds(641, 11, 347, 41);
-		optionTab.add(lblNewLabel_2_1);		
+		optionTab.add(lblNewLabel_2_1);				
+
+		/* ====================== TEST CONNECTION BASE DE DONNEES ==============================*/
+		BddConnection.connectBdd();
+		// Si connection invalide, ouverture de la fenetre de connection
+		if(!BddConnection.isConnected) {
+			ConnectionWindow cw = new ConnectionWindow();
+			cw.setVisible(true);
+		}
+		// Sinon, remplissage des tableaux, des box
+		else {
+			getDatas();
+		}
 	}
 
+	
 	public void setListe(ListeJoueur liste) {
 		this.liste = liste;
 	}
@@ -400,15 +466,19 @@ public class Window extends JFrame {
 		return choice;
 	}
 	
-	public static void getPlayers() {
+	public static void getDatas() {		
 		liste = BddPlayer.GetPlayers("");
 		liste.fillTab(tablePlayer);
+		BddTournoi.getTournament(tableTournoi);
+		BddEpreuve.getYear(yearBox);
 	}
 	
+	/*======================= FONCTION CLOSE WINDOW =====================*/
 	public void closeWindow() {
 		this.dispose();
 	}
 	
+	/* ========================= CLASS POUR RENDRE LES CELLULES DU TABLEAU NON EDITABLES ==============*/
 	private class nullEditor extends DefaultCellEditor {
         /**
        * 

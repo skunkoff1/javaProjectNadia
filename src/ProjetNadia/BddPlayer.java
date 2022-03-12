@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 public interface BddPlayer {	
 	
+	/*==================== METHODE BASE DE DONNEES TAB JOUEUR =========================*/
 	public static ListeJoueur GetPlayers(String choice) {
 		Connection cn = BddConnection.getCn();
 		PreparedStatement ps = null;
@@ -152,7 +153,6 @@ public interface BddPlayer {
 			e.printStackTrace();
 		} finally {
 			try {
-				cn.close();
 				ps.close();					
 			} catch (SQLException e) {
 				e.printStackTrace();

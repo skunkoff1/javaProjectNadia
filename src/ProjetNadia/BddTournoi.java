@@ -14,13 +14,13 @@ public interface BddTournoi {
 			PreparedStatement ps = null;
 			ResultSet rs =null;
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			for( int i = model.getRowCount() - 1; i >= 0; i-- )
-			{
+			for( int i = model.getRowCount() - 1; i >= 0; i-- )	{
 			    model.removeRow(i);
-			}
-			
+			}			
 			try {
-				ps = cn.prepareStatement("SELECT epreuve.ANNEE, epreuve.TYPE_EPREUVE, tournoi.NOM, epreuve.ID FROM tennis.epreuve, tennis.tournoi WHERE epreuve.ID_TOURNOI = tournoi.ID");			
+				ps = cn.prepareStatement("SELECT epreuve.ANNEE, epreuve.TYPE_EPREUVE, tournoi.NOM, epreuve.ID "
+										+ "FROM tennis.epreuve, tennis.tournoi "
+										+ "WHERE epreuve.ID_TOURNOI = tournoi.ID");			
 				rs = ps.executeQuery();
 				while(rs.next()) {	
 					model.addRow(new Object[] {rs.getInt(1), rs.getString(3), rs.getString(2), rs.getInt(4)});
@@ -167,7 +167,35 @@ public interface BddTournoi {
 			}
 			message = "tournoi supprimer, la fenetre va automatiquement se fermer";
 			return message;
-		}		
+		}
+		
+		public static void searchTournament(String search, JTable table) {
+			Connection cn = BddConnection.getCn();
+			PreparedStatement ps = null;	
+			ResultSet rs =null;
+			DefaultTableModel model = (DefaultTableModel) table.getModel();
+			for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
+			    model.removeRow(i);
+			}
+			try {
+				ps = cn.prepareStatement("SELECT epreuve.ANNEE, epreuve.TYPE_EPREUVE, tournoi.NOM, epreuve.ID "
+										+ "FROM tennis.epreuve, tennis.tournoi"
+										+ " WHERE epreuve.ID_TOURNOI = tournoi.ID AND epreuve.ANNEE "
+										+ "LIKE '%"+search+"%' OR tournoi.NOM LIKE '%"+search+"%'");
+				rs = ps.executeQuery();
+				while(rs.next()) {				
+					model.addRow(new Object[] {rs.getInt(1), rs.getString(3), rs.getString(2), rs.getInt(4)});			
+				}						
+			}catch (SQLException e){
+				e.printStackTrace();
+			} finally {
+				try {
+					ps.close();					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}	
+			}
+		}
 	}
 
 
