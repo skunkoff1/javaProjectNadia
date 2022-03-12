@@ -8,6 +8,8 @@ import java.util.EventObject;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.border.LineBorder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Window extends JFrame {
 	/**
@@ -23,7 +25,11 @@ public class Window extends JFrame {
 	private JTextField searchTournoi;
 	public static JTable tableTournoi;
 	private static JComboBox yearBox;
-	private static JTable tableEpreuve;
+	static JTable tableEpreuve;
+	private JLabel finalText;
+	private JLabel winnerText;
+	private JLabel winnerLabel;
+	private JLabel finalLabel;
 	
 	public Window() {
 		
@@ -55,14 +61,14 @@ public class Window extends JFrame {
 	            new Object [][] {
 	            },
 	            new String [] {
-	                "Année","Nom","Type", "ID"
+	                "Année","Nom","Type d'épreuve", "ID"
         });
 		
 		DefaultTableModel modelEpreuve = new DefaultTableModel(
 	            new Object [][] {
 	            },
 	            new String [] {
-	                "Nom","Prénom", "Tournoi"
+	                "Nom","Prénom", "Tournoi", "Statut"
         });
 		
 		/*======================= CHOIX POUR LES COMBOBOX =======================*/
@@ -79,13 +85,20 @@ public class Window extends JFrame {
 		tablePlayer = new JTable(model);
 		tablePlayer.setFillsViewportHeight(true);
 		tablePlayer.setForeground(Color.WHITE);
-		tablePlayer.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		tablePlayer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tablePlayer.setBackground(Color.DARK_GRAY);		
 		tablePlayer.setBounds(0, 0, 800, 400);
 		tablePlayer.getColumn("ID").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumn("Prenom").setCellEditor(new nullEditor(new JCheckBox()));
 		tablePlayer.getColumn("Sexe").setCellEditor(new nullEditor(new JCheckBox()));
+		tablePlayer.getColumnModel().getColumn(0).setWidth(50);	
+		tablePlayer.getColumnModel().getColumn(0).setMinWidth(50);	
+		tablePlayer.getColumnModel().getColumn(0).setMaxWidth(50);	
+		tablePlayer.getColumnModel().getColumn(3).setWidth(50);	
+		tablePlayer.getColumnModel().getColumn(3).setMinWidth(50);	
+		tablePlayer.getColumnModel().getColumn(3).setMaxWidth(50);	
+		tablePlayer.setRowHeight(20);
 					
 		JLabel errorLabel = new JLabel();
 		errorLabel.setOpaque(true);
@@ -203,14 +216,14 @@ public class Window extends JFrame {
 		
 		searchField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		searchField.setForeground(Color.BLACK);
-		searchField.setBounds(316, 144, 461, 30);
+		searchField.setBounds(367, 144, 661, 30);
 		playerTab.add(searchField);
 		searchField.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("Rechercher :");
+		JLabel lblNewLabel_1 = new JLabel("Rechercher un joueur :");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setBounds(199, 144, 120, 30);
+		lblNewLabel_1.setBounds(158, 144, 220, 30);
 		playerTab.add(lblNewLabel_1);
 		
 		/*=========================== TAB TOUNROI ==================================*/
@@ -221,6 +234,7 @@ public class Window extends JFrame {
 		tournoiTab.setLayout(null);
 		
 		JLabel errorLabelTournoi = new JLabel("");
+		errorLabelTournoi.setHorizontalAlignment(SwingConstants.CENTER);
 		errorLabelTournoi.setVisible(false);
 		errorLabelTournoi.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		errorLabelTournoi.setBackground(Color.RED);
@@ -228,20 +242,46 @@ public class Window extends JFrame {
 		errorLabelTournoi.setOpaque(true);
 		errorLabelTournoi.setBounds(153, 11, 845, 46);
 		tournoiTab.add(errorLabelTournoi);		
+
+		winnerText = new JLabel("");
+		winnerText.setForeground(Color.WHITE);
+		winnerText.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		winnerText.setBounds(849, 344, 270, 46);
+		tournoiTab.add(winnerText);
+		
+		finalText = new JLabel("");
+		finalText.setForeground(Color.WHITE);
+		finalText.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		finalText.setBounds(849, 458, 270, 46);
+		tournoiTab.add(finalText);
 		
 		tableTournoi = new JTable(modelTournoi);
+		tableTournoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int ID = (int)modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3);
+				BddTournoi.getPlayers(ID, winnerText, finalText);
+			}
+		});
 		tableTournoi.setFillsViewportHeight(true);
 		tableTournoi.setForeground(Color.WHITE);
-		tableTournoi.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		tableTournoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableTournoi.setBackground(Color.DARK_GRAY);	
 		tableTournoi.setBounds(0, 0, 800, 400);
 		tableTournoi.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
-		tableTournoi.getColumn("Annee").setCellEditor(new nullEditor(new JCheckBox()));
-		tableTournoi.getColumn("Type").setCellEditor(new nullEditor(new JCheckBox()));
+		tableTournoi.getColumn("Année").setCellEditor(new nullEditor(new JCheckBox()));
+		tableTournoi.getColumn("Type d'épreuve").setCellEditor(new nullEditor(new JCheckBox()));
 		tableTournoi.getColumnModel().getColumn(3).setMinWidth(0);
 		tableTournoi.getColumnModel().getColumn(3).setMaxWidth(0);
-		tableTournoi.getColumnModel().getColumn(3).setWidth(0);				
-
+		tableTournoi.getColumnModel().getColumn(3).setWidth(0);
+		tableTournoi.getColumnModel().getColumn(0).setMinWidth(120);
+		tableTournoi.getColumnModel().getColumn(0).setMaxWidth(120);
+		tableTournoi.getColumnModel().getColumn(0).setWidth(120);	
+		tableTournoi.getColumnModel().getColumn(2).setMinWidth(120);
+		tableTournoi.getColumnModel().getColumn(2).setMaxWidth(120);
+		tableTournoi.getColumnModel().getColumn(2).setWidth(120);	
+		tableTournoi.setRowHeight(20);
+		
 		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
 		addTournoiBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -251,7 +291,7 @@ public class Window extends JFrame {
 			}
 		});
 		addTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		addTournoiBtn.setBounds(153, 68, 188, 67);
+		addTournoiBtn.setBounds(153, 68, 166, 58);
 		tournoiTab.add(addTournoiBtn);
 		
 		JButton editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
@@ -277,7 +317,7 @@ public class Window extends JFrame {
 			}
 		});
 		editTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		editTournoiBtn.setBounds(470, 68, 199, 65);
+		editTournoiBtn.setBounds(489, 68, 166, 58);
 		tournoiTab.add(editTournoiBtn);
 		
 		JButton removeTournoiBtn = new JButton("<html><p style='text-align:center'>Supprimer <br> un tournoi</p></html>");
@@ -304,7 +344,7 @@ public class Window extends JFrame {
 			}
 		});
 		removeTournoiBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		removeTournoiBtn.setBounds(799, 69, 199, 66);
+		removeTournoiBtn.setBounds(832, 69, 166, 58);
 		tournoiTab.add(removeTournoiBtn);
 		
 		searchTournoi = new JTextField();
@@ -317,22 +357,41 @@ public class Window extends JFrame {
 			}
 		});
 		searchTournoi.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		searchTournoi.setBounds(362, 145, 636, 32);
+		searchTournoi.setBounds(362, 156, 636, 32);
 		tournoiTab.add(searchTournoi);
 		searchTournoi.setColumns(10);
 		
-		JLabel lblNewLabel_6 = new JLabel("Rechercher :");
-		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblNewLabel_6 = new JLabel("Rechercher un tournoi :");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_6.setForeground(Color.WHITE);
-		lblNewLabel_6.setBounds(153, 146, 199, 31);
+		lblNewLabel_6.setBounds(153, 157, 199, 31);
 		tournoiTab.add(lblNewLabel_6);		
 				
 		JScrollPane scrollPane_1 = new JScrollPane(tableTournoi);
 		scrollPane_1.setForeground(Color.WHITE);
 		scrollPane_1.setBackground(Color.DARK_GRAY);
-		scrollPane_1.setBounds(153, 210, 845, 504);
+		scrollPane_1.setBounds(153, 210, 638, 504);
 		tournoiTab.add(scrollPane_1);
+		
+		winnerLabel = new JLabel("Vainqueur : ");
+		winnerLabel.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		winnerLabel.setForeground(Color.WHITE);
+		winnerLabel.setBounds(813, 296, 208, 37);
+		tournoiTab.add(winnerLabel);
+		
+		finalLabel = new JLabel("Finaliste :");
+		finalLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		finalLabel.setForeground(Color.WHITE);
+		finalLabel.setBounds(813, 401, 208, 46);
+		tournoiTab.add(finalLabel);
+				
+		JLabel lblNewLabel_7 = new JLabel("<html><p>Cliquer sur un tournoi<br> pour afficher les infos</p></html>");
+		lblNewLabel_7.setForeground(Color.WHITE);
+		lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel_7.setBounds(813, 210, 199, 75);
+		tournoiTab.add(lblNewLabel_7);
+
 		
 		/*======================== TAB EPREUVE ==============================================*/
 		JPanel epreuveTab = new JPanel();
@@ -343,22 +402,22 @@ public class Window extends JFrame {
 		JLabel lblNewLabel_5 = new JLabel("Ann\u00E9e :");
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_5.setForeground(Color.WHITE);
-		lblNewLabel_5.setBounds(131, 28, 84, 32);
+		lblNewLabel_5.setBounds(131, 53, 84, 32);
 		epreuveTab.add(lblNewLabel_5);
 		
 		yearBox = new JComboBox();
-		yearBox.setBounds(238, 28, 170, 32);
+		yearBox.setBounds(238, 53, 170, 32);
 		epreuveTab.add(yearBox);
 		
 		JLabel lblNewLabel_5_2 = new JLabel("Type d'\u00E9preuve :");
 		lblNewLabel_5_2.setForeground(Color.WHITE);
 		lblNewLabel_5_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_5_2.setBounds(472, 28, 163, 32);
+		lblNewLabel_5_2.setBounds(472, 53, 163, 32);
 		epreuveTab.add(lblNewLabel_5_2);
 		
 		JComboBox sexBoxEpreuve = new JComboBox(typeChoice);
 		sexBoxEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sexBoxEpreuve.setBounds(658, 28, 170, 32);
+		sexBoxEpreuve.setBounds(658, 53, 170, 32);
 		epreuveTab.add(sexBoxEpreuve);
 		
 		JButton btnNewButton = new JButton("Rechercher");
@@ -366,20 +425,22 @@ public class Window extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String year = (String) yearBox.getSelectedItem();
 				String sex = (String) sexBoxEpreuve.getSelectedItem();
-//				BddEpreuve.getPlayers(year, sex);
+				BddEpreuve.getPlayers(year, sex, tableEpreuve);
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setBounds(901, 28, 177, 32);
+		btnNewButton.setBounds(901, 53, 177, 32);
 		epreuveTab.add(btnNewButton);
 
 		tableEpreuve = new JTable(modelEpreuve);
+		tableEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tableEpreuve.setForeground(Color.WHITE);
 		tableEpreuve.setBackground(Color.DARK_GRAY);
 		tableEpreuve.setFillsViewportHeight(true);
 		tableEpreuve.getColumn("Nom").setCellEditor(new nullEditor(new JCheckBox()));
 		tableEpreuve.getColumn("Prénom").setCellEditor(new nullEditor(new JCheckBox()));
 		tableEpreuve.getColumn("Tournoi").setCellEditor(new nullEditor(new JCheckBox()));
+		tableEpreuve.setRowHeight(20);
 		
 		JScrollPane scrollPane_2 = new JScrollPane(tableEpreuve);
 		scrollPane_2.setBounds(131, 141, 947, 573);
@@ -443,7 +504,7 @@ public class Window extends JFrame {
 		lblNewLabel_2_1.setAlignmentX(0.5f);
 		lblNewLabel_2_1.setBounds(641, 11, 347, 41);
 		optionTab.add(lblNewLabel_2_1);				
-
+		
 		/* ====================== TEST CONNECTION BASE DE DONNEES ==============================*/
 		BddConnection.connectBdd();
 		// Si connection invalide, ouverture de la fenetre de connection

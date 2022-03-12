@@ -45,19 +45,44 @@ public class BddEpreuve {
 		for( int i = model.getRowCount() - 1; i >= 0; i-- )	{
 		    model.removeRow(i);
 		}	
+		if(sex.equals("femme")) {
+			sex = "F";
+		} else {
+			sex = "H";
+		}
 		try {
-			ps = cn.prepareStatement("SELECT ANNEE FROM epreuve");			
+			ps = cn.prepareStatement("SELECT joueur.NOM,joueur.PRENOM,tournoi.NOM "
+									+ "FROM tennis.epreuve, tennis.tournoi, tennis.joueur, tennis.match_tennis "
+									+ "WHERE joueur.ID = match_tennis.ID_FINALISTE "
+									+ "AND epreuve.ANNEE='"+year+"' "
+									+ "AND epreuve.TYPE_EPREUVE ='"+sex+"'"
+									+ "AND epreuve.ID=match_tennis.ID_EPREUVE "
+									+ "AND epreuve.ID_TOURNOI = tournoi.ID;");			
 			rs = ps.executeQuery();
 			while(rs.next()) {	
-				}			
-			}catch (SQLException e){
+				model.addRow(new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), "finaliste"});
+				}	
+			ps.close();
+			rs = null;
+			ps = cn.prepareStatement("SELECT joueur.NOM,joueur.PRENOM,tournoi.NOM "
+									+ "FROM tennis.epreuve, tennis.tournoi, tennis.joueur, tennis.match_tennis "
+									+ "WHERE joueur.ID = match_tennis.ID_VAINQUEUR "
+									+ "AND epreuve.ANNEE='"+year+"' "
+									+ "AND epreuve.TYPE_EPREUVE ='"+sex+"'"
+									+ "AND epreuve.ID=match_tennis.ID_EPREUVE "
+									+ "AND epreuve.ID_TOURNOI = tournoi.ID;");			
+			rs = ps.executeQuery();
+			while(rs.next()) {	
+			model.addRow(new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), "vainqueur"});
+			}	
+		}catch (SQLException e){
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();
+			} catch (SQLException e) {
 				e.printStackTrace();
-			} finally {
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}		
+			}
+		}		
 	}
 }

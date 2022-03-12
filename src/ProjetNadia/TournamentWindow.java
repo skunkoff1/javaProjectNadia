@@ -24,21 +24,21 @@ public class TournamentWindow extends JFrame{
 	
 	public TournamentWindow(String title, String label) {
 		super(title);
-		getContentPane().setBackground(new Color(0, 0, 0));
+		getContentPane().setBackground(new Color(40, 40, 40));
 		getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel(label);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(0, 11, 584, 32);
+		lblNewLabel.setBounds(0, 11, 584, 45);
 		getContentPane().add(lblNewLabel);
 		
 		
 		yearField = new JTextField();
 		yearField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		yearField.setColumns(10);
-		yearField.setBounds(226, 120, 348, 37);
+		yearField.setBounds(226, 144, 348, 37);
 		getContentPane().add(yearField);
 		
 		String[] choice = {"femme", "homme"};
@@ -47,19 +47,19 @@ public class TournamentWindow extends JFrame{
 		
 		sexField = new JComboBox(choice);
 		sexField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sexField.setBounds(226, 178, 152, 37);
+		sexField.setBounds(226, 192, 152, 37);
 		getContentPane().add(sexField);
 		
 		nameLabel = new JLabel("Choisir un tournoi :");
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		nameLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		nameLabel.setBounds(23, 67, 501, 37);
+		nameLabel.setBounds(23, 91, 501, 37);
 		getContentPane().add(nameLabel);
 		
 		nameBox = new JComboBox(nameChoice);		
 		nameBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		nameBox.setBounds(226, 67, 348, 37);
+		nameBox.setBounds(226, 91, 348, 37);
 		getContentPane().add(nameBox);	
 		
 		
@@ -67,14 +67,14 @@ public class TournamentWindow extends JFrame{
 		yearLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		yearLabel.setForeground(Color.WHITE);
 		yearLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		yearLabel.setBounds(23, 120, 501, 37);
+		yearLabel.setBounds(23, 144, 501, 37);
 		getContentPane().add(yearLabel);
 		
 		sexLabel = new JLabel("Type de l'\u00E9preuve :");
 		sexLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		sexLabel.setForeground(Color.WHITE);
 		sexLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sexLabel.setBounds(23, 178, 501, 37);
+		sexLabel.setBounds(23, 192, 501, 37);
 		getContentPane().add(sexLabel);
 		
 		JButton cancelButton = new JButton("Annuler");
@@ -84,18 +84,18 @@ public class TournamentWindow extends JFrame{
 			}
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cancelButton.setBounds(70, 275, 190, 64);
+		cancelButton.setBounds(93, 287, 163, 52);
 		getContentPane().add(cancelButton);
 		
 		confirmButton = new JButton("Confirmer");
 		confirmButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		confirmButton.setBounds(321, 275, 190, 64);
+		confirmButton.setBounds(321, 287, 163, 52);
 		getContentPane().add(confirmButton);
 		
 		messageLabel = new JLabel("");
 		messageLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		messageLabel.setForeground(Color.WHITE);
-		messageLabel.setBounds(70, 232, 441, 32);
+		messageLabel.setBounds(70, 244, 441, 32);
 		getContentPane().add(messageLabel);
 		setPreferredSize(new Dimension(600, 400));
 		setSize(new Dimension(600, 400));

@@ -165,7 +165,7 @@ public interface BddTournoi {
 					return error;
 				}	
 			}
-			message = "tournoi supprimer, la fenetre va automatiquement se fermer";
+			message = "tournoi supprimé, la fenetre va automatiquement se fermer";
 			return message;
 		}
 		
@@ -196,6 +196,52 @@ public interface BddTournoi {
 				}	
 			}
 		}
+		
+		public static void getPlayers(int ID, JLabel winner, JLabel finalist) {
+			Connection cn = BddConnection.getCn();
+			PreparedStatement ps = null;	
+			ResultSet rs =null;
+			try {
+				ps = cn.prepareStatement("SELECT joueur.nom, joueur.prenom "
+										+ "FROM joueur, match_tennis "
+										+ "WHERE match_tennis.ID_EPREUVE ='"+ID+"'"
+										+ " AND joueur.ID = match_tennis.ID_VAINQUEUR;");
+				rs = ps.executeQuery();
+				boolean empty = true;
+				while(rs.next()) {	
+					empty = false;
+					winner.setText(rs.getString(2) + " " + rs.getString(1));
+				}	
+				if(empty == true) {
+					winner.setText("pas de données");
+				}
+				ps.close();				
+				rs = null;
+				ps = cn.prepareStatement("SELECT joueur.nom, joueur.prenom "
+										+ "FROM joueur, match_tennis "
+										+ "WHERE match_tennis.ID_EPREUVE ='"+ID+"'"
+										+ " AND joueur.ID = match_tennis.ID_FINALISTE;");
+				rs = ps.executeQuery();
+				empty=true;
+				while(rs.next()) {		
+					empty = false;
+					finalist.setText(rs.getString(2) + " " + rs.getString(1));
+				}
+				if(empty == true) {
+					finalist.setText("pas de données");
+				}
+			}catch (SQLException e){
+				e.printStackTrace();
+			} finally {
+				try {
+					ps.close();					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}	
+			}
+		}
+		
+		
 	}
 
 

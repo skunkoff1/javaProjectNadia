@@ -30,7 +30,7 @@ public class PlayerWindow extends JFrame{
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public PlayerWindow(String title) {
 		super(title);
-		getContentPane().setBackground(new Color(0, 0, 0));
+		getContentPane().setBackground(new Color(40, 40, 40));
 		getContentPane().setLayout(null);
 		setPreferredSize(new Dimension(600, 400));
 		setSize(new Dimension(600, 400));
@@ -40,20 +40,20 @@ public class PlayerWindow extends JFrame{
 		
 		playerNameField = new JTextField();
 		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		playerNameField.setBounds(250, 54, 293, 34);
+		playerNameField.setBounds(248, 75, 293, 34);
 		getContentPane().add(playerNameField);
 		playerNameField.setColumns(10);
 		
 		playerFirstNameField = new JTextField();
 		playerFirstNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		playerFirstNameField.setBounds(250, 110, 293, 34);
+		playerFirstNameField.setBounds(248, 131, 293, 34);
 		getContentPane().add(playerFirstNameField);
 		playerFirstNameField.setColumns(10);
 		
 		String[] choice = {"femme", "homme"};
 		playerSexChoice = new JComboBox(choice);
 		playerSexChoice.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		playerSexChoice.setBounds(250, 167, 293, 34);
+		playerSexChoice.setBounds(248, 188, 293, 34);
 		getContentPane().add(playerSexChoice);
 		
 		JButton cancelButton = new JButton("Annuler");
@@ -63,44 +63,44 @@ public class PlayerWindow extends JFrame{
 			}
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cancelButton.setBounds(64, 263, 197, 72);
+		cancelButton.setBounds(98, 284, 163, 51);
 		getContentPane().add(cancelButton);
 
 		messageLabel = new JLabel("");
 		messageLabel.setForeground(Color.WHITE);
 		messageLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		messageLabel.setBounds(10, 215, 564, 37);
+		messageLabel.setBounds(10, 236, 564, 37);
 		getContentPane().add(messageLabel);
 		
 		confirmButton = new JButton("Confirmer");		
 		confirmButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		confirmButton.setBounds(338, 263, 205, 72);
+		confirmButton.setBounds(338, 284, 163, 51);
 		getContentPane().add(confirmButton);
 		
 		nameLabel = new JLabel("Nom");
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		nameLabel.setBounds(64, 54, 433, 34);
+		nameLabel.setBounds(62, 75, 433, 34);
 		getContentPane().add(nameLabel);
 		
 		firstNameLabel = new JLabel("Pr\u00E9nom");
 		firstNameLabel.setForeground(Color.WHITE);
 		firstNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		firstNameLabel.setBounds(64, 110, 408, 34);
+		firstNameLabel.setBounds(62, 131, 408, 34);
 		getContentPane().add(firstNameLabel);
 		
 		sexLabel = new JLabel("Sexe");
 		sexLabel.setForeground(Color.WHITE);
 		sexLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sexLabel.setBounds(64, 167, 389, 34);
+		sexLabel.setBounds(62, 188, 389, 34);
 		getContentPane().add(sexLabel);
 		
 		lblNewLabel_1 = new JLabel();
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(10, 11, 564, 34);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel_1.setBounds(10, 11, 564, 53);
 		getContentPane().add(lblNewLabel_1);			
 	}
 	
