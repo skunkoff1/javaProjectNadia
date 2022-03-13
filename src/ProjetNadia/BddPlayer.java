@@ -4,9 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-
-
 public interface BddPlayer {	
 	
 	/*==================== METHODE BASE DE DONNEES TAB JOUEUR =========================*/
@@ -159,5 +156,28 @@ public interface BddPlayer {
 			}	
 		}
 		return liste;
+	}
+	
+	public static int getPlayerID(String name) {
+		Connection cn = BddConnection.getCn();
+		PreparedStatement ps = null;	
+		ResultSet rs =null;
+		int playerID = 0;
+		try {
+			ps = cn.prepareStatement("SELECT joueur.ID FROM joueur WHERE PRENOM='"+name+"'");
+			rs = ps.executeQuery();
+			while(rs.next()) {				
+				playerID = rs.getInt(1);	
+			}						
+		}catch (SQLException e){
+			e.printStackTrace();
+		} finally {
+			try {
+				ps.close();					
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
+		}
+		return playerID;
 	}
 }

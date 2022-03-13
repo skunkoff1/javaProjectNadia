@@ -21,7 +21,7 @@ public class PlayerWindow extends JFrame{
 	private JComboBox playerSexChoice;
 	private JButton confirmButton;
 	private JLabel messageLabel;
-	private JLabel lblNewLabel_1;
+	private JLabel playerTitle;
 	private JLabel nameLabel;
 	private JLabel firstNameLabel;
 	private JLabel sexLabel;
@@ -96,12 +96,12 @@ public class PlayerWindow extends JFrame{
 		sexLabel.setBounds(62, 188, 389, 34);
 		getContentPane().add(sexLabel);
 		
-		lblNewLabel_1 = new JLabel();
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_1.setBounds(10, 11, 564, 53);
-		getContentPane().add(lblNewLabel_1);			
+		playerTitle = new JLabel();
+		playerTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		playerTitle.setForeground(Color.WHITE);
+		playerTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		playerTitle.setBounds(10, 11, 564, 53);
+		getContentPane().add(playerTitle);			
 	}
 	
 	public int getID() {
@@ -139,9 +139,11 @@ public class PlayerWindow extends JFrame{
 			playerSexChoice.setSelectedIndex(1);
 		}
 	}
+	
+	/*============== REGLAGE DE LA FENETRE EN FONCTION DU MODE ===================*/
 	public void setButton(String mode) {
 		if(mode.equals("ajouter")) {
-			lblNewLabel_1.setText("Ajouter un joueur");
+			playerTitle.setText("Ajouter un joueur");
 			this.confirmButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String name = playerNameField.getText();
@@ -158,7 +160,7 @@ public class PlayerWindow extends JFrame{
 			});
 		}
 		if(mode.equals("modifier")) {
-			lblNewLabel_1.setText("Modifier le joueur selectionn\u00E9");
+			playerTitle.setText("Modifier le joueur selectionn\u00E9");
 			confirmButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String name = playerNameField.getText();
@@ -175,7 +177,7 @@ public class PlayerWindow extends JFrame{
 			});
 		}
 		if(mode.equals("supprimer")) {
-			lblNewLabel_1.setText("Etes vous certain de vouloir supprimer ce joueur ?");
+			playerTitle.setText("Etes vous certain de vouloir supprimer ce joueur ?");
 			confirmButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String message = BddPlayer.removePlayer(ID);
@@ -188,6 +190,16 @@ public class PlayerWindow extends JFrame{
 				}
 			});
 		}
+	}
+
+	/*================= SET COLOR ====================*/
+	public void setColor(Color background, Color text) {
+		getContentPane().setBackground(background);
+		playerTitle.setForeground(text);
+		nameLabel.setForeground(text);
+		firstNameLabel.setForeground(text);
+		sexLabel.setForeground(text);
+		messageLabel.setForeground(text);
 	}
 
 	/* METHODE DE LA FENETRE */

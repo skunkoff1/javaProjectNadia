@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.*;
 
 public class TournamentWindow extends JFrame{
@@ -21,18 +20,19 @@ public class TournamentWindow extends JFrame{
 	private JLabel sexLabel;
 	private JButton confirmButton;
 	private JLabel messageLabel;
+	private JLabel tournamentTitle;
 	
 	public TournamentWindow(String title, String label) {
 		super(title);
 		getContentPane().setBackground(new Color(40, 40, 40));
 		getContentPane().setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel(label);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(0, 11, 584, 45);
-		getContentPane().add(lblNewLabel);
+		tournamentTitle = new JLabel(label);
+		tournamentTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		tournamentTitle.setForeground(Color.WHITE);
+		tournamentTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		tournamentTitle.setBounds(0, 11, 584, 45);
+		getContentPane().add(tournamentTitle);
 		
 		
 		yearField = new JTextField();
@@ -124,6 +124,7 @@ public class TournamentWindow extends JFrame{
 		yearField.setText(String.valueOf(year));
 	}
 	
+	/*============== REGLAGE DE LA FENETRE EN FONCTION DU MODE ===================*/
 	public void setWindow(String mode) {
 		if(mode.equals("supprimer")) {
 			nameLabel.setText("Nom du tournoi : " + nameBox.getSelectedItem());
@@ -172,6 +173,15 @@ public class TournamentWindow extends JFrame{
 				}
 			});
 		}
+	}
+	/*================== SET COLOR =======================*/
+	public void setColor(Color background, Color text) {
+		getContentPane().setBackground(background);
+		tournamentTitle.setForeground(text);
+		nameLabel.setForeground(text);
+		yearLabel.setForeground(text);
+		sexLabel.setForeground(text);
+		messageLabel.setForeground(text);
 	}
 	
 	/* METHODE DE LA FENETRE */

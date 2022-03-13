@@ -22,27 +22,81 @@ public class Window extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	/* ====================== ATTRIBUTS ==========================*/
-	private static JTable tablePlayer;
+	/* ====================== ATTRIBUTS ==========================*/	
 	private static String choice;
 	private static ListeJoueur liste = new ListeJoueur();
+	
+	/*========= TAB PLAYER ==========*/
+	private JPanel playerTab;
+	private static JTable tablePlayer;
+	private JLabel playerSexLabel;
+	private JLabel playerSearchLabel;	
+	private JButton addPlayerButton;
+	private JButton editPlayerButton;
+	private JButton deletePlayerButton;
+	private JLabel errorLabel;
+	private static JComboBox comboBox;
 	private JTextField searchField;
-	private JTextField searchTournoi;
+	
+	/*========= TAB TOURNOI =========*/
+	private JPanel tournoiTab;
 	public static JTable tableTournoi;
-	private static JComboBox yearBox;
-	static JTable tableEpreuve;
 	private JLabel finalText;
 	private JLabel winnerText;
 	private JLabel winnerLabel;
 	private JLabel finalLabel;
+	private JLabel infoLabel;
+	private JLabel tournoiSearchLabel;
+	private JButton addTournoiBtn;
+	private JButton editTournoiBtn;
+	private JButton removeTournoiBtn;
+	private JTextField searchTournoi;
+	private JButton editInfoBtn;
+	private JLabel errorLabelTournoi;
+	
+	/*========== TAB EPREUVE ==========*/
+	private JPanel epreuveTab;
+	static JTable tableEpreuve;
+	private JLabel epreuveYearLabel;
+	private JLabel epreuveSexLabel;
+	private static JComboBox yearBox;
+	private static JComboBox sexBoxEpreuve;
+	private JButton searchEpreuveBtn;
+	
+	/*=========== TAB MATCH ==============*/
+	private JPanel matchTab;
+	
+	/*=========== LABELS OPTION TAB =============*/
+	private JPanel optionTab;
+	private JLabel optionTitle1;
+	private JLabel optionTitle2;
+	private JLabel fontSizeLabel;
+	private JLabel fontStyleLabel;
+	private JLabel colorThemeLabel;
+	private JLabel connectionLabel;
+	private static JComboBox fontSizeBox;
+	private static JComboBox fontStyleBox;
+	private static JComboBox colorThemeBox;
+	private JButton connectionBtn;
+	private JButton applyStyleBtn;
+	
+	/*=============== THEME COULEUR / PAR DEFAUT -> THEME SOMBRE ==================*/
+	private Color backGroundColor = new Color(40,40,40);
+	private Color backGroundTab = new Color(70,70,70);
+	private Color textColor1 = new Color(0,0,0);
+	private Color textColor2 = new Color(255,255,255);	
+	
+	/*======================== TAILLE ET STYLE POLICE =============================*/
+	private Font font1;
+	private Font font2;
+	private Font font3;
 	
 	public Window() {
 		
 		/* ================== PROPRIETES GENERALES DE LA FENETRE ======================*/
 		super("Projet Nadia");		
-		this.setVisible(true);
-				
-		getContentPane().setBackground(new Color(40, 40, 40));
+		this.setVisible(true);				
+		getContentPane().setBackground(backGroundColor);
 		setPreferredSize(new Dimension(1200, 800));
 		setSize(new Dimension(1200, 800));
 		setResizable(false);
@@ -77,32 +131,34 @@ public class Window extends JFrame {
         });		
 		
 		/*======================= CHOIX POUR LES COMBOBOX =======================*/
+		
 		String[] comboChoice = {"les deux" , "femme", "homme" };		
 		String[] typeChoice = {"femme", "homme"};
 		
-		/*============================ TAB JOUEUR ===============================*/		
-		JPanel playerTab = new JPanel();				
+		/*============================ TAB JOUEUR ===============================*/	
+		
+		playerTab = new JPanel();				
 		playerTab.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		playerTab.setBackground(new Color(40, 40, 40));
+		playerTab.setBackground(backGroundColor);
 		container.addTab(" Joueur ", null, playerTab, null);
 		playerTab.setLayout(null);
 		
 		tablePlayer = new JTable(model);
 		tablePlayer.setFillsViewportHeight(true);
-		tablePlayer.setForeground(Color.WHITE);
+		tablePlayer.setForeground(textColor2);
 		tablePlayer.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tablePlayer.setBackground(Color.DARK_GRAY);		
+		tablePlayer.setBackground(backGroundTab);		
 		tablePlayer.setBounds(0, 0, 800, 400);
-		tablePlayer.getColumnModel().getColumn(0).setWidth(50);	
-		tablePlayer.getColumnModel().getColumn(0).setMinWidth(50);	
-		tablePlayer.getColumnModel().getColumn(0).setMaxWidth(50);	
+		tablePlayer.getColumnModel().getColumn(0).setWidth(0);	
+		tablePlayer.getColumnModel().getColumn(0).setMinWidth(0);	
+		tablePlayer.getColumnModel().getColumn(0).setMaxWidth(0);	
 		tablePlayer.getColumnModel().getColumn(3).setWidth(50);	
 		tablePlayer.getColumnModel().getColumn(3).setMinWidth(50);	
 		tablePlayer.getColumnModel().getColumn(3).setMaxWidth(50);	
 		renderTable(tablePlayer);
 		tablePlayer.setRowHeight(20);
 					
-		JLabel errorLabel = new JLabel();
+		errorLabel = new JLabel();
 		errorLabel.setOpaque(true);
 		errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		errorLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -115,8 +171,7 @@ public class Window extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(tablePlayer);
 		scrollPane.setBounds(158, 197, 870, 517);
 		playerTab.add(scrollPane);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		JComboBox comboBox = new JComboBox(comboChoice);
+		comboBox = new JComboBox(comboChoice);
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				choice = (String) comboBox.getSelectedItem();
@@ -125,21 +180,22 @@ public class Window extends JFrame {
 			}
 		});
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		comboBox.setForeground(Color.BLACK);
+		comboBox.setForeground(textColor2);
 		comboBox.setBounds(157, 100, 145, 22);
 		playerTab.add(comboBox);
 		
-		JLabel lblNewLabel = new JLabel("Choisir le sexe :");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(157, 59, 145, 30);
-		playerTab.add(lblNewLabel);
+		playerSexLabel = new JLabel("Choisir le sexe :");
+		playerSexLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		playerSexLabel.setForeground(textColor2);
+		playerSexLabel.setBounds(157, 59, 145, 30);
+		playerTab.add(playerSexLabel);
 		
-		JButton addPlayerButton = new JButton("<html><p style='text-align:center'>Ajouter<br>un joueur</p></html>");
+		addPlayerButton = new JButton("<html><p style='text-align:center'>Ajouter<br>un joueur</p></html>");
 		addPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PlayerWindow add = new PlayerWindow("Ajouter un joueur");
 				add.setButton("ajouter");
+				add.setColor(backGroundColor, textColor2);
 				add.setVisible(true);
 			}
 		});
@@ -147,7 +203,7 @@ public class Window extends JFrame {
 		addPlayerButton.setBounds(379, 66, 159, 56);
 		playerTab.add(addPlayerButton);
 		
-		JButton editPlayerButton = new JButton("<html><p style='text-align:center'>Editer<br>un joueur</p></html>");
+		editPlayerButton = new JButton("<html><p style='text-align:center'>Editer<br>un joueur</p></html>");
 		editPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tablePlayer.getSelectedRow() == -1) {
@@ -160,6 +216,7 @@ public class Window extends JFrame {
 					String firstName = (String) model.getValueAt(tablePlayer.getSelectedRow(), 2);
 					String sex = (String) model.getValueAt(tablePlayer.getSelectedRow(), 3);
 					PlayerWindow modify = new PlayerWindow("éditer un joueur");
+					modify.setColor(backGroundColor, textColor2);
 					modify.setId(ID);
 					modify.setButton("modifier");
 					modify.setPlayerName(name);
@@ -173,7 +230,7 @@ public class Window extends JFrame {
 		editPlayerButton.setBounds(618, 66, 159, 56);
 		playerTab.add(editPlayerButton);
 		
-		JButton deletePlayerButton = new JButton("<html><p style='text-align:center'>Supprimer<br>un joueur</p></html>");
+		deletePlayerButton = new JButton("<html><p style='text-align:center'>Supprimer<br>un joueur</p></html>");
 		deletePlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {			
 				if(tablePlayer.getSelectedRow() == -1) {
@@ -185,7 +242,8 @@ public class Window extends JFrame {
 					String name = (String) model.getValueAt(tablePlayer.getSelectedRow(), 1);
 					String firstName = (String) model.getValueAt(tablePlayer.getSelectedRow(), 2);
 					String sex = (String) model.getValueAt(tablePlayer.getSelectedRow(), 3);
-					PlayerWindow remove = new PlayerWindow("supprimer un joueur");					
+					PlayerWindow remove = new PlayerWindow("supprimer un joueur");	
+					remove.setColor(backGroundColor, textColor2);
 					remove.setButton("supprimer");
 					remove.setId(ID);
 					remove.setPlayerName(name);
@@ -218,24 +276,25 @@ public class Window extends JFrame {
 		
 		searchField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		searchField.setForeground(Color.BLACK);
-		searchField.setBounds(367, 144, 661, 30);
+		searchField.setBounds(415, 144, 613, 30);
 		playerTab.add(searchField);
 		searchField.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("Rechercher un joueur :");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setBounds(158, 144, 220, 30);
-		playerTab.add(lblNewLabel_1);
+		playerSearchLabel = new JLabel("Rechercher un joueur :");
+		playerSearchLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerSearchLabel.setForeground(Color.WHITE);
+		playerSearchLabel.setBounds(158, 144, 247, 30);
+		playerTab.add(playerSearchLabel);
 		
 		/*=========================== TAB TOUNROI ==================================*/
-		JPanel tournoiTab = new JPanel();
+		
+		tournoiTab = new JPanel();
 		tournoiTab.setBackground(new Color(40, 40, 40));
 		tournoiTab.setForeground(Color.WHITE);
 		container.addTab(" Tournoi ", null, tournoiTab, null);
 		tournoiTab.setLayout(null);
 		
-		JLabel errorLabelTournoi = new JLabel("");
+		errorLabelTournoi = new JLabel("");
 		errorLabelTournoi.setHorizontalAlignment(SwingConstants.CENTER);
 		errorLabelTournoi.setVisible(false);
 		errorLabelTournoi.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -246,13 +305,13 @@ public class Window extends JFrame {
 		tournoiTab.add(errorLabelTournoi);		
 
 		winnerText = new JLabel("");
-		winnerText.setForeground(Color.WHITE);
+		winnerText.setForeground(textColor2);
 		winnerText.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		winnerText.setBounds(849, 344, 270, 46);
 		tournoiTab.add(winnerText);
 		
 		finalText = new JLabel("");
-		finalText.setForeground(Color.WHITE);
+		finalText.setForeground(textColor2);
 		finalText.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		finalText.setBounds(849, 458, 270, 46);
 		tournoiTab.add(finalText);
@@ -291,10 +350,11 @@ public class Window extends JFrame {
 		renderTable(tableTournoi);
 		tableTournoi.setRowHeight(20);
 		
-		JButton addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
+		addTournoiBtn = new JButton("<html><p style='text-align:center'>Ajouter <br> un tournoi</p></html>");
 		addTournoiBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TournamentWindow add = new TournamentWindow("Ajouter un tournoi", "Ajouter un tournoi");
+				add.setColor(backGroundColor, textColor2);
 				add.setButton("ajouter");
 				add.setVisible(true);
 			}
@@ -303,7 +363,7 @@ public class Window extends JFrame {
 		addTournoiBtn.setBounds(153, 68, 166, 58);
 		tournoiTab.add(addTournoiBtn);
 		
-		JButton editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
+		editTournoiBtn = new JButton("<html><p style='text-align:center'>Editer <br> un tournoi</p></html>");
 		editTournoiBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableTournoi.getSelectedRow() == -1) {
@@ -315,13 +375,14 @@ public class Window extends JFrame {
 					int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);
 					String name = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),1);
 					String sex = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),2);
-					TournamentWindow add = new TournamentWindow("Editer un tournoi", "Editer un tournoi");
-					add.setButton("modifier");
-					add.setId(ID);
-					add.setTournamentName(name);
-					add.setTournamentSex(sex);
-					add.setTournamentYear(year);
-					add.setVisible(true);					
+					TournamentWindow modify = new TournamentWindow("Editer un tournoi", "Editer un tournoi");
+					modify.setColor(backGroundColor, textColor2);
+					modify.setButton("modifier");
+					modify.setId(ID);
+					modify.setTournamentName(name);
+					modify.setTournamentSex(sex);
+					modify.setTournamentYear(year);
+					modify.setVisible(true);					
 				}	
 			}
 		});
@@ -329,7 +390,7 @@ public class Window extends JFrame {
 		editTournoiBtn.setBounds(489, 68, 166, 58);
 		tournoiTab.add(editTournoiBtn);
 		
-		JButton removeTournoiBtn = new JButton("<html><p style='text-align:center'>Supprimer <br> un tournoi</p></html>");
+		removeTournoiBtn = new JButton("<html><p style='text-align:center'>Supprimer <br> un tournoi</p></html>");
 		removeTournoiBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(tableTournoi.getSelectedRow() == -1) {
@@ -341,14 +402,15 @@ public class Window extends JFrame {
 					int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);
 					String name = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),1);
 					String sex = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),2);
-					TournamentWindow add = new TournamentWindow("Supprimer un tournoi", "Supprimer un tournoi");
-					add.setButton("supprimer");					
-					add.setId(ID);
-					add.setTournamentName(name);
-					add.setTournamentSex(sex);
-					add.setTournamentYear(year);
-					add.setWindow("supprimer");
-					add.setVisible(true);
+					TournamentWindow remove = new TournamentWindow("Supprimer un tournoi", "Supprimer un tournoi");
+					remove.setColor(backGroundColor, textColor2);
+					remove.setButton("supprimer");					
+					remove.setId(ID);
+					remove.setTournamentName(name);
+					remove.setTournamentSex(sex);
+					remove.setTournamentYear(year);
+					remove.setWindow("supprimer");
+					remove.setVisible(true);
 				}
 			}
 		});
@@ -366,16 +428,16 @@ public class Window extends JFrame {
 			}
 		});
 		searchTournoi.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		searchTournoi.setBounds(362, 156, 636, 32);
+		searchTournoi.setBounds(409, 156, 589, 32);
 		tournoiTab.add(searchTournoi);
 		searchTournoi.setColumns(10);
 		
-		JLabel lblNewLabel_6 = new JLabel("Rechercher un tournoi :");
-		lblNewLabel_6.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_6.setForeground(Color.WHITE);
-		lblNewLabel_6.setBounds(153, 157, 199, 31);
-		tournoiTab.add(lblNewLabel_6);		
+		tournoiSearchLabel = new JLabel("Rechercher un tournoi :");
+		tournoiSearchLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		tournoiSearchLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tournoiSearchLabel.setForeground(Color.WHITE);
+		tournoiSearchLabel.setBounds(153, 157, 246, 31);
+		tournoiTab.add(tournoiSearchLabel);		
 				
 		JScrollPane scrollPane_1 = new JScrollPane(tableTournoi);
 		scrollPane_1.setForeground(Color.WHITE);
@@ -384,7 +446,7 @@ public class Window extends JFrame {
 		tournoiTab.add(scrollPane_1);
 		
 		winnerLabel = new JLabel("Vainqueur : ");
-		winnerLabel.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		winnerLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		winnerLabel.setForeground(Color.WHITE);
 		winnerLabel.setBounds(813, 296, 208, 37);
 		tournoiTab.add(winnerLabel);
@@ -395,51 +457,77 @@ public class Window extends JFrame {
 		finalLabel.setBounds(813, 401, 208, 46);
 		tournoiTab.add(finalLabel);
 				
-		JLabel lblNewLabel_7 = new JLabel("<html><p>Cliquer sur un tournoi<br>pu parcourez le tableau<br> pour afficher les infos</p></html>");
-		lblNewLabel_7.setForeground(Color.WHITE);
-		lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_7.setBounds(813, 210, 199, 75);
-		tournoiTab.add(lblNewLabel_7);
+		infoLabel = new JLabel("<html><p>Cliquer sur un tournoi<br>ou parcourez le tableau<br> pour afficher les infos</p></html>");
+		infoLabel.setForeground(Color.WHITE);
+		infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		infoLabel.setBounds(813, 210, 306, 75);
+		tournoiTab.add(infoLabel);
+		
+		editInfoBtn = new JButton("Editer");
+		editInfoBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tableTournoi.getSelectedRow() == -1) {
+					errorLabelTournoi.setText("Pour pouvoir éditer les infos, veuillez selectionner un tournoi");
+					errorLabelTournoi.setVisible(true);					
+				} else {
+				int ID = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3);
+				int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);
+				String name = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),1);
+				String sex = (String) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),2);				
+				EditFinalWindow efw = new EditFinalWindow();
+				BddTournoi.fillBox(EditFinalWindow.getFinalBox(), EditFinalWindow.getWinnerBox(), sex );
+				efw.setInfoLabel(name, year, sex);
+				efw.setTournamentID(ID);
+				efw.setVisible(true);
+				}
+			}
+		});
+		editInfoBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		editInfoBtn.setBounds(867, 543, 154, 58);
+		tournoiTab.add(editInfoBtn);
 
 		
 		/*======================== TAB EPREUVE ==============================================*/
-		JPanel epreuveTab = new JPanel();
+		
+		epreuveTab = new JPanel();
 		epreuveTab.setBackground(new Color(40, 40, 40));
 		container.addTab(" Epreuve ", null, epreuveTab, null);
 		epreuveTab.setLayout(null);
 		
-		JLabel lblNewLabel_5 = new JLabel("Ann\u00E9e :");
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_5.setForeground(Color.WHITE);
-		lblNewLabel_5.setBounds(131, 53, 84, 32);
-		epreuveTab.add(lblNewLabel_5);
+		epreuveYearLabel = new JLabel("Ann\u00E9e :");
+		epreuveYearLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		epreuveYearLabel.setForeground(Color.WHITE);
+		epreuveYearLabel.setBounds(131, 53, 84, 32);
+		epreuveTab.add(epreuveYearLabel);
 		
 		yearBox = new JComboBox();
+		yearBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		yearBox.setBounds(238, 53, 170, 32);
 		epreuveTab.add(yearBox);
 		
-		JLabel lblNewLabel_5_2 = new JLabel("Type d'\u00E9preuve :");
-		lblNewLabel_5_2.setForeground(Color.WHITE);
-		lblNewLabel_5_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_5_2.setBounds(472, 53, 163, 32);
-		epreuveTab.add(lblNewLabel_5_2);
+		epreuveSexLabel = new JLabel("Type d'\u00E9preuve :");
+		epreuveSexLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		epreuveSexLabel.setForeground(Color.WHITE);
+		epreuveSexLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		epreuveSexLabel.setBounds(429, 53, 219, 32);
+		epreuveTab.add(epreuveSexLabel);
 		
-		JComboBox sexBoxEpreuve = new JComboBox(typeChoice);
+		sexBoxEpreuve = new JComboBox(typeChoice);
 		sexBoxEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		sexBoxEpreuve.setBounds(658, 53, 170, 32);
 		epreuveTab.add(sexBoxEpreuve);
 		
-		JButton btnNewButton = new JButton("Rechercher");
-		btnNewButton.addActionListener(new ActionListener() {
+		searchEpreuveBtn = new JButton("Rechercher");
+		searchEpreuveBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String year = (String) yearBox.getSelectedItem();
 				String sex = (String) sexBoxEpreuve.getSelectedItem();
 				BddEpreuve.getPlayers(year, sex, tableEpreuve);
 			}
 		});
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setBounds(901, 53, 177, 32);
-		epreuveTab.add(btnNewButton);
+		searchEpreuveBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		searchEpreuveBtn.setBounds(901, 53, 177, 32);
+		epreuveTab.add(searchEpreuveBtn);
 
 		tableEpreuve = new JTable(modelEpreuve);
 		tableEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -454,64 +542,114 @@ public class Window extends JFrame {
 		epreuveTab.add(scrollPane_2);
 				
 		/*=============================== TAB MATCH ======================================*/
-		JPanel matchTab = new JPanel();
-		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		container.addTab(" Match ", null, matchTab, null);
-		matchTab.setLayout(null);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.setBounds(47, 54, 269, 135);
-		matchTab.add(btnNewButton_1);
+//		matchTab = new JPanel();
+//		matchTab.setBackground(new Color(40, 40, 40));
+//		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
+//		container.addTab(" Match ", null, matchTab, null);
+//		matchTab.setLayout(null);
+//		
+//		JLabel lblNewLabel_8 = new JLabel("To do !");
+//		lblNewLabel_8.setForeground(Color.WHITE);
+//		lblNewLabel_8.setFont(new Font("DialogInput", Font.PLAIN, 20));
+//		lblNewLabel_8.setBounds(61, 25, 250, 67);
+//		matchTab.add(lblNewLabel_8);
 		
 		/*=========================== TAB OPTION ========================================*/
-		JPanel optionTab = new JPanel();
+		
+		String[] fontSizeOptions = {"petit", "moyen", "grand"};
+		String[] fontStyleOptions = {"Arial","Baskerville Old Face","Calibri","DialogInput","Cambria","Tahoma"};
+		String[] colorThemeOptions = {"clair", "sombre"};
+		
+		optionTab = new JPanel();
 		optionTab.setBackground(new Color(40, 40, 40));
 		container.addTab(" Options ", null, optionTab, null);
 		optionTab.setLayout(null);
 		
-		JLabel lblNewLabel_2 = new JLabel("  Options Graphiques");
-		lblNewLabel_2.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblNewLabel_2.setBorder(new LineBorder(new Color(192, 192, 192), 2));
-		lblNewLabel_2.setForeground(Color.WHITE);
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		lblNewLabel_2.setBounds(29, 11, 347, 41);
-		optionTab.add(lblNewLabel_2);
+		optionTitle1 = new JLabel(" Options Graphiques");
+		optionTitle1.setHorizontalAlignment(SwingConstants.CENTER);
+		optionTitle1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		optionTitle1.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		optionTitle1.setForeground(Color.WHITE);
+		optionTitle1.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		optionTitle1.setBounds(93, 11, 347, 41);
+		optionTab.add(optionTitle1);
 		
-		JLabel lblNewLabel_3 = new JLabel("Style de police");
-		lblNewLabel_3.setForeground(Color.WHITE);
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_3.setBounds(39, 166, 132, 35);
-		optionTab.add(lblNewLabel_3);
+		fontStyleLabel = new JLabel("Style de police :");
+		fontStyleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		fontStyleLabel.setForeground(Color.WHITE);
+		fontStyleLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		fontStyleLabel.setBounds(50, 166, 253, 35);
+		optionTab.add(fontStyleLabel);
 		
-		JLabel lblNewLabel_3_1 = new JLabel("Taille de police");
-		lblNewLabel_3_1.setForeground(Color.WHITE);
-		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel_3_1.setBounds(39, 106, 132, 35);
-		optionTab.add(lblNewLabel_3_1);
+		fontSizeLabel = new JLabel("Taille de police :");
+		fontSizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		fontSizeLabel.setForeground(Color.WHITE);
+		fontSizeLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		fontSizeLabel.setBounds(50, 108, 253, 35);
+		optionTab.add(fontSizeLabel);
 		
-		@SuppressWarnings("rawtypes")
-		JComboBox fontSizeBox = new JComboBox();
-		fontSizeBox.setBounds(249, 115, 127, 27);
+		fontSizeBox = new JComboBox(fontSizeOptions);
+		fontSizeBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		fontSizeBox.setBounds(313, 108, 180, 34);
 		optionTab.add(fontSizeBox);
 		
-		@SuppressWarnings("rawtypes")
-		JComboBox fontStyleBox = new JComboBox();
-		fontStyleBox.setBounds(249, 175, 127, 27);
+		fontStyleBox = new JComboBox(fontStyleOptions);
+		fontStyleBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		fontStyleBox.setBounds(313, 167, 180, 35);
 		optionTab.add(fontStyleBox);
+				
+		optionTitle2 = new JLabel("Options logicielles");
+		optionTitle2.setHorizontalAlignment(SwingConstants.CENTER);
+		optionTitle2.setForeground(Color.WHITE);
+		optionTitle2.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		optionTitle2.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		optionTitle2.setAlignmentX(0.5f);
+		optionTitle2.setBounds(696, 11, 347, 41);
+		optionTab.add(optionTitle2);
 		
-		JLabel lblNewLabel_4 = new JLabel("New label");
-		lblNewLabel_4.setOpaque(true);
-		lblNewLabel_4.setBounds(582, 0, 1, 733);
-		optionTab.add(lblNewLabel_4);
+		colorThemeLabel = new JLabel("Th\u00E8me de couleur :");
+		colorThemeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		colorThemeLabel.setForeground(Color.WHITE);
+		colorThemeLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		colorThemeLabel.setBounds(50, 229, 253, 35);
+		optionTab.add(colorThemeLabel);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("  Options on verra");
-		lblNewLabel_2_1.setForeground(Color.WHITE);
-		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		lblNewLabel_2_1.setBorder(new LineBorder(new Color(192, 192, 192), 2));
-		lblNewLabel_2_1.setAlignmentX(0.5f);
-		lblNewLabel_2_1.setBounds(641, 11, 347, 41);
-		optionTab.add(lblNewLabel_2_1);				
+		colorThemeBox = new JComboBox(colorThemeOptions);
+		colorThemeBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		colorThemeBox.setBounds(313, 230, 180, 35);
+		optionTab.add(colorThemeBox);
 		
+		connectionLabel = new JLabel("Informations de connection");
+		connectionLabel.setForeground(Color.WHITE);
+		connectionLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		connectionLabel.setBounds(762, 103, 370, 35);
+		optionTab.add(connectionLabel);
+		
+		applyStyleBtn = new JButton("Appliquer");
+		applyStyleBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String size = (String) fontSizeBox.getSelectedItem();
+				String style = (String) fontStyleBox.getSelectedItem();
+				String color = (String) colorThemeBox.getSelectedItem();
+				changeGraphics(size, style, color);
+			}
+		});
+		applyStyleBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		applyStyleBtn.setBounds(217, 304, 162, 41);
+		optionTab.add(applyStyleBtn);
+		
+		connectionBtn = new JButton("Ouvrir");
+		connectionBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ConnectionWindow cw = new ConnectionWindow();
+				cw.setVisible(true);
+			}
+		});
+		connectionBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		connectionBtn.setBounds(762, 152, 218, 49);
+		optionTab.add(connectionBtn);
+				
 		/* ====================== TEST CONNECTION BASE DE DONNEES ==============================*/
 		BddConnection.connectBdd();
 		// Si connection invalide, ouverture de la fenetre de connection
@@ -525,6 +663,7 @@ public class Window extends JFrame {
 		}
 	}
 
+	/*============= GETTER ET SETTER ====================*/
 	public static JTable getTable() {
 		return tablePlayer;
 	}
@@ -539,6 +678,7 @@ public class Window extends JFrame {
 		BddTournoi.getTournament(tableTournoi);
 		BddEpreuve.getYear(yearBox);
 	}
+	
 	/*======== FONCTION POUR LE RENDU DU TABLEAU + CELLULES NON EDITABLES ========*/
 	public void renderTable(JTable table) {
 		
@@ -551,6 +691,126 @@ public class Window extends JFrame {
 			table.getColumnModel().getColumn(i).setCellEditor(new nullEditor(new JCheckBox()));
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
+	}
+	
+	/*================== FONCTION OPTIONS GRAPHIQUES ===============================*/
+	public void changeGraphics(String size, String style, String color) {
+		/*=========================== COLOR ===============================*/
+		if(color.equals("clair")) {
+			backGroundColor = new Color(177,194,222);
+			backGroundTab = new Color(193,215,222);
+			textColor1 = new Color(255,255,255);
+			textColor2 = new Color(0,0,0);			
+		} else if(color.equals("sombre")) {
+			backGroundColor = new Color(40,40,40);
+			backGroundTab = new Color(70,70,70);
+			textColor1 = new Color(0,0,0);
+			textColor2 = new Color(255,255,255);
+		}
+		/*======= PANELS ======*/
+		playerTab.setBackground(backGroundColor);
+		tournoiTab.setBackground(backGroundColor);
+		epreuveTab.setBackground(backGroundColor);
+		matchTab.setBackground(backGroundColor);
+		optionTab.setBackground(backGroundColor);
+		
+		/*========= TABLES ======*/
+		tablePlayer.setBackground(backGroundTab);
+		tablePlayer.setForeground(textColor2);
+		tableTournoi.setBackground(backGroundTab);
+		tableTournoi.setForeground(textColor2);
+		tableEpreuve.setBackground(backGroundTab);
+		tableEpreuve.setForeground(textColor2);
+		
+		/*======== LABELS ========*/
+		playerSexLabel.setForeground(textColor2);
+		playerSearchLabel.setForeground(textColor2);
+		finalText.setForeground(textColor2);
+		winnerText.setForeground(textColor2);
+		winnerLabel.setForeground(textColor2);
+		finalLabel.setForeground(textColor2);
+		infoLabel.setForeground(textColor2);
+		tournoiSearchLabel.setForeground(textColor2);
+		epreuveYearLabel.setForeground(textColor2);
+		epreuveSexLabel.setForeground(textColor2);
+		optionTitle1.setForeground(textColor2);
+		optionTitle2.setForeground(textColor2);
+		fontSizeLabel.setForeground(textColor2);
+		fontStyleLabel.setForeground(textColor2);
+		colorThemeLabel.setForeground(textColor2);
+		connectionLabel.setForeground(textColor2);
+		
+		/*=========================== POLICE ==============================*/
+		if(size.equals("petit")) {
+			font1 = new Font(style, Font.PLAIN, 11);	
+			font2 = new Font(style, Font.PLAIN, 14);	
+			font3 = new Font(style, Font.PLAIN, 18);	
+			tablePlayer.setRowHeight(19);
+			tableTournoi.setRowHeight(19);
+			tableEpreuve.setRowHeight(19);
+		} else if(size.equals("moyen")) {
+			font1 = new Font(style, Font.PLAIN, 14);	
+			font2 = new Font(style, Font.PLAIN, 18);	
+			font3 = new Font(style, Font.PLAIN, 24);	
+			tablePlayer.setRowHeight(22);
+			tableTournoi.setRowHeight(22);
+			tableEpreuve.setRowHeight(22);
+		} else if(size.equals("grand")) {
+			font1 = new Font(style, Font.PLAIN, 16);	
+			font2 = new Font(style, Font.PLAIN, 22);	
+			font3 = new Font(style, Font.PLAIN, 28);	
+			tablePlayer.setRowHeight(30);
+			tableTournoi.setRowHeight(30);
+			tableEpreuve.setRowHeight(30);
+		}
+		tablePlayer.setFont(font1);		
+		tableTournoi.setFont(font1);
+		tableEpreuve.setFont(font1);
+		
+		errorLabel.setFont(font3);
+		errorLabelTournoi.setFont(font3);
+		optionTitle1.setFont(font3);
+		optionTitle2.setFont(font3);
+		
+		/*======= TAB PLAYER ========*/
+		comboBox.setFont(font2);
+		playerSexLabel.setFont(font2);
+		addPlayerButton.setFont(font2);
+		editPlayerButton.setFont(font2);
+		deletePlayerButton.setFont(font2);
+		searchField.setFont(font2);
+		playerSearchLabel.setFont(font2);
+		
+		/*======= TAB TOURNOI ========*/
+		winnerText.setFont(font2);
+		finalText.setFont(font2);
+		addTournoiBtn.setFont(font2);
+		editTournoiBtn.setFont(font2);
+		removeTournoiBtn.setFont(font2);
+		searchTournoi.setFont(font2);
+		tournoiSearchLabel.setFont(font2);
+		winnerLabel.setFont(font2);
+		finalLabel.setFont(font2);
+		infoLabel.setFont(font2);
+		editInfoBtn.setFont(font2);
+		
+		/*======= TAB EPREUVE ========*/
+		epreuveSexLabel.setFont(font2);
+		epreuveYearLabel.setFont(font2);
+		yearBox.setFont(font2);
+		sexBoxEpreuve.setFont(font2);
+		searchEpreuveBtn.setFont(font2);
+		
+		/*======= TAB OPTION ========*/
+		fontStyleLabel.setFont(font2);
+		fontSizeLabel.setFont(font2);
+		fontSizeBox.setFont(font2);
+		fontStyleBox.setFont(font2);
+		colorThemeLabel.setFont(font2);
+		colorThemeBox.setFont(font2);
+		applyStyleBtn.setFont(font2);
+		connectionLabel.setFont(font2);
+		connectionBtn.setFont(font2);
 	}
 	
 	/*======================= FONCTION CLOSE WINDOW =====================*/

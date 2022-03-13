@@ -243,7 +243,59 @@ public interface BddTournoi {
 			}
 		}
 		
+		public static void fillBox(JComboBox winner, JComboBox finalist, String sex) {
+			Connection cn = BddConnection.getCn();
+			PreparedStatement ps = null;	
+			ResultSet rs =null;
+			try {
+				ps = cn.prepareStatement("SELECT joueur.NOM, joueur.PRENOM FROM joueur WHERE SEXE='"+sex+"'");
+				rs = ps.executeQuery();
+				while(rs.next()) {				
+					winner.addItem(rs.getString(2) + " " + rs.getString(1));
+					finalist.addItem(rs.getString(2) + " " + rs.getString(1));
+				}						
+			}catch (SQLException e){
+				e.printStackTrace();
+			} finally {
+				try {
+					ps.close();					
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}	
+			}			
+		}
+		
+		public static String updateTournamentInfo(int tournamentID, String[] finalist, String[] winner) {
+			Connection cn = BddConnection.getCn();
+			PreparedStatement ps = null;	
+			String message;
+			String error;
+			int finalistID = BddPlayer.getPlayerID(finalist[0]);
+			int winnerID = BddPlayer.getPlayerID(winner[0]);
+			try {
+				ps = cn.prepareStatement("UPDATE match_tennis "
+										+ "SET ID_VAINQUEUR='"+winnerID+"', "
+										+ "ID_FINALISTE='"+finalistID+"' "
+										+ "WHERE ID_EPREUVE='"+tournamentID+"'");				
+				ps.executeUpdate();					
+			}catch (SQLException e){
+				e.printStackTrace();
+				error = "Un problème est survenu" + e;
+				return error;
+			} finally {
+				try {
+					ps.close();					
+				} catch (SQLException e) {
+					e.printStackTrace();
+					error = "Un problème est survenu" + e;
+					return error;
+				}	
+			}
+			message = "infos modifiées, la fenetre va automatiquement se fermer";
+			return message;
+		}
 		
 	}
 
-
+		
+	
