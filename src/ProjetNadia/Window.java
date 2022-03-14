@@ -511,24 +511,24 @@ public class Window extends JFrame {
 		epreuveYearLabel = new JLabel("Ann\u00E9e :");
 		epreuveYearLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		epreuveYearLabel.setForeground(Color.WHITE);
-		epreuveYearLabel.setBounds(131, 53, 84, 32);
+		epreuveYearLabel.setBounds(131, 26, 213, 32);
 		epreuveTab.add(epreuveYearLabel);
 		
 		yearBox = new JComboBox();
 		yearBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		yearBox.setBounds(238, 53, 170, 32);
+		yearBox.setBounds(132, 80, 170, 32);
 		epreuveTab.add(yearBox);
 		
 		epreuveSexLabel = new JLabel("Type d'\u00E9preuve :");
 		epreuveSexLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		epreuveSexLabel.setForeground(Color.WHITE);
 		epreuveSexLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		epreuveSexLabel.setBounds(429, 53, 219, 32);
+		epreuveSexLabel.setBounds(383, 26, 219, 32);
 		epreuveTab.add(epreuveSexLabel);
 		
 		sexBoxEpreuve = new JComboBox(typeChoice);
 		sexBoxEpreuve.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		sexBoxEpreuve.setBounds(658, 53, 170, 32);
+		sexBoxEpreuve.setBounds(432, 80, 170, 32);
 		epreuveTab.add(sexBoxEpreuve);
 		
 		searchEpreuveBtn = new JButton("Rechercher");
@@ -571,12 +571,15 @@ public class Window extends JFrame {
 		tableMatch.setFillsViewportHeight(true);
 		tableMatch.setForeground(Color.WHITE);
 		tableMatch.setBackground(Color.DARK_GRAY);
+		tableMatch.getColumnModel().getColumn(0).setMinWidth(120);
+		tableMatch.getColumnModel().getColumn(0).setMaxWidth(120);
+		tableMatch.getColumnModel().getColumn(0).setWidth(120);
 		renderTable(tableMatch);
 		scrollPane_3.setViewportView(tableMatch);		
 
 		searchMatch = new JTextField();
 		searchMatch.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		searchMatch.setBounds(362, 117, 479, 33);
+		searchMatch.setBounds(468, 117, 373, 33);
 		matchTab.add(searchMatch);
 		searchMatch.setColumns(10);
 		
@@ -594,7 +597,7 @@ public class Window extends JFrame {
 		finalRadioBtn.setBackground(backGroundColor);
 		finalRadioBtn.setForeground(Color.WHITE);
 		finalRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		finalRadioBtn.setBounds(156, 130, 109, 23);
+		finalRadioBtn.setBounds(156, 130, 251, 23);
 		matchTab.add(finalRadioBtn);
 		buttonGroup.add(finalRadioBtn);
 		
@@ -610,7 +613,7 @@ public class Window extends JFrame {
 		winnerRadioBtn.setBackground(backGroundColor);
 		winnerRadioBtn.setForeground(Color.WHITE);
 		winnerRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		winnerRadioBtn.setBounds(156, 86, 109, 23);
+		winnerRadioBtn.setBounds(156, 86, 251, 23);
 		matchTab.add(winnerRadioBtn);
 		buttonGroup.add(winnerRadioBtn);
 		
@@ -626,7 +629,7 @@ public class Window extends JFrame {
 		allRadioBtn.setBackground(backGroundColor);
 		allRadioBtn.setForeground(Color.WHITE);
 		allRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		allRadioBtn.setBounds(156, 41, 109, 23);
+		allRadioBtn.setBounds(156, 41, 251, 23);
 		matchTab.add(allRadioBtn);
 		buttonGroup.add(allRadioBtn);
 		allRadioBtn.setSelected(true);
@@ -634,7 +637,7 @@ public class Window extends JFrame {
 		searchMatchLabel = new JLabel("Rechercher :");
 		searchMatchLabel.setForeground(Color.WHITE);
 		searchMatchLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		searchMatchLabel.setBounds(362, 58, 239, 45);
+		searchMatchLabel.setBounds(468, 61, 239, 45);
 		matchTab.add(searchMatchLabel);
 		
 		validateBtn = new JButton("Valider");
@@ -723,7 +726,7 @@ public class Window extends JFrame {
 		colorThemeBox.setBounds(313, 230, 180, 35);
 		optionTab.add(colorThemeBox);
 		
-		connectionLabel = new JLabel("Informations de connection");
+		connectionLabel = new JLabel("Informations de connexion");
 		connectionLabel.setForeground(Color.WHITE);
 		connectionLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		connectionLabel.setBounds(762, 103, 370, 35);
