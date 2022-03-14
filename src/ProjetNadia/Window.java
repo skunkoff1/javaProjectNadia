@@ -8,8 +8,6 @@ import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.EventObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.border.LineBorder;
@@ -27,7 +25,6 @@ public class Window extends JFrame {
 	/* ====================== ATTRIBUTS ==========================*/	
 	private static String choice;
 	private static ListeJoueur liste = new ListeJoueur();
-	private Map rowColor = new HashMap();
 	
 	/*========= TAB PLAYER ==========*/
 	private JPanel playerTab;
@@ -68,6 +65,12 @@ public class Window extends JFrame {
 	
 	/*=========== TAB MATCH ==============*/
 	private JPanel matchTab;
+	private static JTable tableMatch;
+	private JRadioButton finalRadioBtn;
+	private JRadioButton winnerRadioBtn;
+	private JRadioButton allRadioBtn;
+	private JLabel searchMatchLabel;
+	private JButton validateBtn;
 	
 	/*=========== LABELS OPTION TAB =============*/
 	private JPanel optionTab;
@@ -93,6 +96,7 @@ public class Window extends JFrame {
 	private Font font1;
 	private Font font2;
 	private Font font3;
+	private JTextField searchMatch;
 	
 	public Window() {
 		
@@ -131,6 +135,13 @@ public class Window extends JFrame {
 	            },
 	            new String [] {
 	                "Nom","Prénom", "Tournoi", "Statut"
+        });	
+		
+		DefaultTableModel modelMatch = new DefaultTableModel(
+	            new Object [][] {
+	            },
+	            new String [] {
+	                "Année", "Tournoi", "Nom","Statut"
         });		
 		
 		/*======================= CHOIX POUR LES COMBOBOX =======================*/
@@ -292,7 +303,7 @@ public class Window extends JFrame {
 		/*=========================== TAB TOUNROI ==================================*/
 		
 		tournoiTab = new JPanel();
-		tournoiTab.setBackground(new Color(40, 40, 40));
+		tournoiTab.setBackground(backGroundColor);
 		tournoiTab.setForeground(Color.WHITE);
 		container.addTab(" Tournoi ", null, tournoiTab, null);
 		tournoiTab.setLayout(null);
@@ -493,7 +504,7 @@ public class Window extends JFrame {
 		/*======================== TAB EPREUVE ==============================================*/
 		
 		epreuveTab = new JPanel();
-		epreuveTab.setBackground(new Color(40, 40, 40));
+		epreuveTab.setBackground(backGroundColor);
 		container.addTab(" Epreuve ", null, epreuveTab, null);
 		epreuveTab.setLayout(null);
 		
@@ -546,18 +557,107 @@ public class Window extends JFrame {
 				
 		/*=============================== TAB MATCH ======================================*/
 		
-//		matchTab = new JPanel();
-//		matchTab.setBackground(new Color(40, 40, 40));
-//		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
-//		container.addTab(" Match ", null, matchTab, null);
-//		matchTab.setLayout(null);
-//		
-//		JLabel lblNewLabel_8 = new JLabel("To do !");
-//		lblNewLabel_8.setForeground(Color.WHITE);
-//		lblNewLabel_8.setFont(new Font("DialogInput", Font.PLAIN, 20));
-//		lblNewLabel_8.setBounds(61, 25, 250, 67);
-//		matchTab.add(lblNewLabel_8);
+		matchTab = new JPanel();
+		matchTab.setBackground(backGroundColor);
+		matchTab.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		container.addTab(" Match ", null, matchTab, null);
+		matchTab.setLayout(null);
 		
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setBounds(156, 225, 891, 476);
+		matchTab.add(scrollPane_3);
+		
+		tableMatch = new JTable(modelMatch);
+		tableMatch.setFillsViewportHeight(true);
+		tableMatch.setForeground(Color.WHITE);
+		tableMatch.setBackground(Color.DARK_GRAY);
+		renderTable(tableMatch);
+		scrollPane_3.setViewportView(tableMatch);		
+
+		searchMatch = new JTextField();
+		searchMatch.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		searchMatch.setBounds(362, 117, 479, 33);
+		matchTab.add(searchMatch);
+		searchMatch.setColumns(10);
+		
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		finalRadioBtn = new JRadioButton("Finaliste");		
+		finalRadioBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(finalRadioBtn.getSelectedObjects() != null) {
+					String search = searchMatch.getText();
+					BddMatch.getPlayers(tableMatch, search, "final");
+				}
+			}
+		});
+		finalRadioBtn.setBackground(backGroundColor);
+		finalRadioBtn.setForeground(Color.WHITE);
+		finalRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		finalRadioBtn.setBounds(156, 130, 109, 23);
+		matchTab.add(finalRadioBtn);
+		buttonGroup.add(finalRadioBtn);
+		
+		winnerRadioBtn = new JRadioButton("Vainqueur");
+		winnerRadioBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(winnerRadioBtn.getSelectedObjects() != null) {
+					String search = searchMatch.getText();
+					BddMatch.getPlayers(tableMatch, search, "winner");
+				}
+			}
+		});
+		winnerRadioBtn.setBackground(backGroundColor);
+		winnerRadioBtn.setForeground(Color.WHITE);
+		winnerRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		winnerRadioBtn.setBounds(156, 86, 109, 23);
+		matchTab.add(winnerRadioBtn);
+		buttonGroup.add(winnerRadioBtn);
+		
+		allRadioBtn = new JRadioButton("Les deux");
+		allRadioBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(allRadioBtn.getSelectedObjects() != null) {
+					String search = searchMatch.getText();
+					BddMatch.getPlayers(tableMatch, search, "all");
+				}
+			}
+		});
+		allRadioBtn.setBackground(backGroundColor);
+		allRadioBtn.setForeground(Color.WHITE);
+		allRadioBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		allRadioBtn.setBounds(156, 41, 109, 23);
+		matchTab.add(allRadioBtn);
+		buttonGroup.add(allRadioBtn);
+		allRadioBtn.setSelected(true);
+		
+		searchMatchLabel = new JLabel("Rechercher :");
+		searchMatchLabel.setForeground(Color.WHITE);
+		searchMatchLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		searchMatchLabel.setBounds(362, 58, 239, 45);
+		matchTab.add(searchMatchLabel);
+		
+		validateBtn = new JButton("Valider");
+		validateBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String search = searchMatch.getText();
+				String mode = "";
+				if(finalRadioBtn.getSelectedObjects() != null) {
+					mode = "final";
+				}
+				if(winnerRadioBtn.getSelectedObjects() != null) {
+					mode = "winner";
+				}
+				if(allRadioBtn.getSelectedObjects() != null) {
+					mode = "all";
+				}
+				BddMatch.getPlayers(tableMatch, search, mode);
+			}
+		});
+		validateBtn.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		validateBtn.setBounds(914, 117, 133, 33);
+		matchTab.add(validateBtn);
+				
 		/*=========================== TAB OPTION ========================================*/
 		
 		String[] fontSizeOptions = {"petit", "moyen", "grand"};
@@ -680,19 +780,15 @@ public class Window extends JFrame {
 		liste.fillTab(tablePlayer);
 		BddTournoi.getTournament(tableTournoi);
 		BddEpreuve.getYear(yearBox);
+		BddMatch.getPlayers(tableMatch, "", "all");
 	}
 	
 	/*======== FONCTION POUR LE RENDU DU TABLEAU + CELLULES NON EDITABLES ========*/
 	public void renderTable(JTable table) {
 		
 		/*= MODELE DE RENDU DES CELLULES DU TABLEAU =*/	
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer();
-		DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
-		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();		
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
-		colorRenderer.setBackground(Color.BLACK);
 		TableModel model = table.getModel();
 		
 		for(int i=0; i<model.getColumnCount(); i++) {
@@ -700,12 +796,7 @@ public class Window extends JFrame {
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);			
 		}
 		
-	}
-	
-	 public void setRowColor(int row, Color color)
-     {
-          rowColor.put(row, color);
-     }
+	}	
 	
 	/*================== FONCTION OPTIONS GRAPHIQUES ===============================*/
 	public void changeGraphics(String size, String style, String color) {
@@ -725,7 +816,7 @@ public class Window extends JFrame {
 		playerTab.setBackground(backGroundColor);
 		tournoiTab.setBackground(backGroundColor);
 		epreuveTab.setBackground(backGroundColor);
-//		matchTab.setBackground(backGroundColor);
+		matchTab.setBackground(backGroundColor);
 		optionTab.setBackground(backGroundColor);
 		
 		/*========= TABLES ======*/
@@ -735,6 +826,8 @@ public class Window extends JFrame {
 		tableTournoi.setForeground(textColor2);
 		tableEpreuve.setBackground(backGroundTab);
 		tableEpreuve.setForeground(textColor2);
+		tableMatch.setBackground(backGroundTab);
+		tableMatch.setForeground(textColor2);
 		
 		/*======== LABELS ========*/
 		playerSexLabel.setForeground(textColor2);
@@ -747,12 +840,25 @@ public class Window extends JFrame {
 		tournoiSearchLabel.setForeground(textColor2);
 		epreuveYearLabel.setForeground(textColor2);
 		epreuveSexLabel.setForeground(textColor2);
+		searchMatchLabel.setForeground(textColor2);
 		optionTitle1.setForeground(textColor2);
 		optionTitle2.setForeground(textColor2);
 		fontSizeLabel.setForeground(textColor2);
 		fontStyleLabel.setForeground(textColor2);
 		colorThemeLabel.setForeground(textColor2);
 		connectionLabel.setForeground(textColor2);
+		
+		/*========== RADIO BUTTON ============*/
+		finalRadioBtn.setBackground(backGroundColor);
+		finalRadioBtn.setForeground(textColor2);
+		winnerRadioBtn.setBackground(backGroundColor);
+		winnerRadioBtn.setForeground(textColor2);
+		allRadioBtn.setBackground(backGroundColor);
+		allRadioBtn.setForeground(textColor2);
+		
+		/*========= OPTION TITLE ============*/
+		optionTitle1.setBorder(new LineBorder((textColor2),2));
+		optionTitle2.setBorder(new LineBorder((textColor2),2));
 		
 		/*=========================== POLICE ==============================*/
 		if(size.equals("petit")) {
@@ -762,6 +868,7 @@ public class Window extends JFrame {
 			tablePlayer.setRowHeight(19);
 			tableTournoi.setRowHeight(19);
 			tableEpreuve.setRowHeight(19);
+			tableMatch.setRowHeight(19);
 		} else if(size.equals("moyen")) {
 			font1 = new Font(style, Font.PLAIN, 14);	
 			font2 = new Font(style, Font.PLAIN, 18);	
@@ -769,6 +876,7 @@ public class Window extends JFrame {
 			tablePlayer.setRowHeight(22);
 			tableTournoi.setRowHeight(22);
 			tableEpreuve.setRowHeight(22);
+			tableMatch.setRowHeight(22);
 		} else if(size.equals("grand")) {
 			font1 = new Font(style, Font.PLAIN, 16);	
 			font2 = new Font(style, Font.PLAIN, 22);	
@@ -776,10 +884,12 @@ public class Window extends JFrame {
 			tablePlayer.setRowHeight(30);
 			tableTournoi.setRowHeight(30);
 			tableEpreuve.setRowHeight(30);
+			tableMatch.setRowHeight(30);
 		}
 		tablePlayer.setFont(font1);		
 		tableTournoi.setFont(font1);
 		tableEpreuve.setFont(font1);
+		tableMatch.setFont(font1);
 		
 		errorLabel.setFont(font3);
 		errorLabelTournoi.setFont(font3);
@@ -814,6 +924,14 @@ public class Window extends JFrame {
 		yearBox.setFont(font2);
 		sexBoxEpreuve.setFont(font2);
 		searchEpreuveBtn.setFont(font2);
+		
+		/*======= TAB MATCH ==========*/
+		finalRadioBtn.setFont(font2);
+		winnerRadioBtn.setFont(font2);
+		allRadioBtn.setFont(font2);
+		searchMatchLabel.setFont(font2);
+		searchMatch.setFont(font2);
+		validateBtn.setFont(font2);
 		
 		/*======= TAB OPTION ========*/
 		fontStyleLabel.setFont(font2);
