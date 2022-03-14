@@ -26,7 +26,7 @@ public interface BddPlayer {
 			}			
 			rs = ps.executeQuery();
 			while(rs.next()) {				
-				Joueur joueur = new Joueur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				Joueur joueur = new Joueur(rs.getInt("joueur.ID"), rs.getString("joueur.NOM"), rs.getString("joueur.PRENOM"), rs.getString("joueur.SEXE"));
 				liste.addJoueur(joueur);				
 				}			
 		}catch (SQLException e){
@@ -143,7 +143,7 @@ public interface BddPlayer {
 			ps = cn.prepareStatement("SELECT * FROM joueur WHERE NOM LIKE '%" + search +"%' OR PRENOM LIKE '%"+search+"%'");
 			rs = ps.executeQuery();
 			while(rs.next()) {				
-				Joueur joueur = new Joueur(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				Joueur joueur = new Joueur(rs.getInt("joueur.ID"), rs.getString("joueur.NOM"), rs.getString("joueur.PRENOM"), rs.getString("joueur.SEXE"));
 				liste.addJoueur(joueur);				
 			}						
 		}catch (SQLException e){
@@ -167,7 +167,7 @@ public interface BddPlayer {
 			ps = cn.prepareStatement("SELECT joueur.ID FROM joueur WHERE PRENOM='"+name+"'");
 			rs = ps.executeQuery();
 			while(rs.next()) {				
-				playerID = rs.getInt(1);	
+				playerID = rs.getInt("joueur.ID");	
 			}						
 		}catch (SQLException e){
 			e.printStackTrace();

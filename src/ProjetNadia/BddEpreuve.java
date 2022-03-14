@@ -21,7 +21,7 @@ public class BddEpreuve {
 			ps = cn.prepareStatement("SELECT ANNEE FROM epreuve");			
 			rs = ps.executeQuery();
 			while(rs.next()) {	
-				yearList.add(rs.getString(1));
+				yearList.add(rs.getString("epreuve.ANNEE"));
 				}			
 			}catch (SQLException e){
 				e.printStackTrace();
@@ -60,7 +60,7 @@ public class BddEpreuve {
 									+ "AND epreuve.ID_TOURNOI = tournoi.ID;");			
 			rs = ps.executeQuery();
 			while(rs.next()) {	
-				model.addRow(new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), "finaliste"});
+				model.addRow(new Object[] { rs.getString("joueur.NOM"), rs.getString("joueur.PRENOM"), rs.getString("tournoi.NOM"), "finaliste"});
 				}	
 			ps.close();
 			rs = null;
@@ -73,7 +73,7 @@ public class BddEpreuve {
 									+ "AND epreuve.ID_TOURNOI = tournoi.ID;");			
 			rs = ps.executeQuery();
 			while(rs.next()) {	
-			model.addRow(new Object[] { rs.getString(1), rs.getString(2), rs.getString(3), "vainqueur"});
+			model.addRow(new Object[] { rs.getString("joueur.NOM"), rs.getString("joueur.PRENOM"), rs.getString("tournoi.NOM"), "vainqueur"});
 			}	
 		}catch (SQLException e){
 			e.printStackTrace();

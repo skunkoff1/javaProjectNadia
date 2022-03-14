@@ -180,7 +180,7 @@ public class Window extends JFrame {
 			}
 		});
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		comboBox.setForeground(textColor2);
+		comboBox.setForeground(textColor1);
 		comboBox.setBounds(157, 100, 145, 22);
 		playerTab.add(comboBox);
 		

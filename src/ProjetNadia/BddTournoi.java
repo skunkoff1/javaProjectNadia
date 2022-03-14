@@ -23,7 +23,7 @@ public interface BddTournoi {
 										+ "WHERE epreuve.ID_TOURNOI = tournoi.ID");			
 				rs = ps.executeQuery();
 				while(rs.next()) {	
-					model.addRow(new Object[] {rs.getInt(1), rs.getString(3), rs.getString(2), rs.getInt(4)});
+					model.addRow(new Object[] {rs.getInt("epreuve.ANNEE"), rs.getString("tournoi.NOM"), rs.getString("epreuve.TYPE_EPREUVE"), rs.getInt("epreuve.ID")});
 					}			
 				}catch (SQLException e){
 					e.printStackTrace();
@@ -186,7 +186,7 @@ public interface BddTournoi {
 										+ "LIKE '%"+search+"%' OR tournoi.NOM LIKE '%"+search+"%'");
 				rs = ps.executeQuery();
 				while(rs.next()) {				
-					model.addRow(new Object[] {rs.getInt(1), rs.getString(3), rs.getString(2), rs.getInt(4)});			
+					model.addRow(new Object[] {rs.getInt("epreuve.ANNEE"), rs.getString("tournoi.NOM"), rs.getString("tournoi.TYPE_EPREUVE"), rs.getInt("epreuve.ID")});			
 				}						
 			}catch (SQLException e){
 				e.printStackTrace();
@@ -212,7 +212,7 @@ public interface BddTournoi {
 				boolean empty = true;
 				while(rs.next()) {	
 					empty = false;
-					winner.setText(rs.getString(2) + " " + rs.getString(1));
+					winner.setText(rs.getString("joueur.PRENOM") + " " + rs.getString("joueur.NOM"));
 				}	
 				if(empty == true) {
 					winner.setText("pas de données");
@@ -251,8 +251,8 @@ public interface BddTournoi {
 				ps = cn.prepareStatement("SELECT joueur.NOM, joueur.PRENOM FROM joueur WHERE SEXE='"+sex+"'");
 				rs = ps.executeQuery();
 				while(rs.next()) {				
-					winner.addItem(rs.getString(2) + " " + rs.getString(1));
-					finalist.addItem(rs.getString(2) + " " + rs.getString(1));
+					winner.addItem(rs.getString("joueur.PRENOM") + " " + rs.getString("joueur.NOM"));
+					finalist.addItem(rs.getString("joueur.PRENOM") + " " + rs.getString("joueur.NOM"));
 				}						
 			}catch (SQLException e){
 				e.printStackTrace();
