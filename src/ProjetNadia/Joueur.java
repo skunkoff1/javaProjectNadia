@@ -1,6 +1,9 @@
 package ProjetNadia;
 
 public class Joueur {
+	
+	/*=============== CELA N'ETAIT PAS UTILE DE FAIRE UN OBJET JOUEUR =================*/
+	/*==================== MAIS CA POURRAIT SERVIR A TERME ============================*/
 	private int ID;
 	private String nom;
 	private String prenom;

@@ -5,6 +5,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class ListeJoueur {
 	
+	/*====== CELA N'ETAIT PAS UTILE DE FAIRE UN OBJET LISTE D'OBJET JOUEUR ============*/
+	/*================= MAIS CA POURRAIT SERVIR A TERME ===============================*/
 	public ArrayList<Joueur> ListeJoueur = new ArrayList<Joueur>();
 	
 	public ListeJoueur() {		

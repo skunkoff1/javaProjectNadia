@@ -711,7 +711,7 @@ public class Window extends JFrame {
 		playerTab.setBackground(backGroundColor);
 		tournoiTab.setBackground(backGroundColor);
 		epreuveTab.setBackground(backGroundColor);
-		matchTab.setBackground(backGroundColor);
+//		matchTab.setBackground(backGroundColor);
 		optionTab.setBackground(backGroundColor);
 		
 		/*========= TABLES ======*/
