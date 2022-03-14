@@ -8,6 +8,8 @@ import javax.swing.table.TableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.border.LineBorder;
@@ -25,6 +27,7 @@ public class Window extends JFrame {
 	/* ====================== ATTRIBUTS ==========================*/	
 	private static String choice;
 	private static ListeJoueur liste = new ListeJoueur();
+	private Map rowColor = new HashMap();
 	
 	/*========= TAB PLAYER ==========*/
 	private JPanel playerTab;
@@ -684,14 +687,25 @@ public class Window extends JFrame {
 		
 		/*= MODELE DE RENDU DES CELLULES DU TABLEAU =*/	
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer();
+		DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+		
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+		colorRenderer.setBackground(Color.BLACK);
 		TableModel model = table.getModel();
 		
 		for(int i=0; i<model.getColumnCount(); i++) {
 			table.getColumnModel().getColumn(i).setCellEditor(new nullEditor(new JCheckBox()));
-			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);			
 		}
+		
 	}
+	
+	 public void setRowColor(int row, Color color)
+     {
+          rowColor.put(row, color);
+     }
 	
 	/*================== FONCTION OPTIONS GRAPHIQUES ===============================*/
 	public void changeGraphics(String size, String style, String color) {

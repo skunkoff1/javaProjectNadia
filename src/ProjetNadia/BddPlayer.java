@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public interface BddPlayer {	
 	
@@ -112,8 +113,32 @@ public interface BddPlayer {
 		String message;
 		String error;
 		Connection cn = BddConnection.getCn();
-		PreparedStatement ps = null;		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Integer> IdMatch = new ArrayList<Integer>();
 		try {
+			// Récupération de tous les matchs de la joueuse
+			ps = cn.prepareStatement("SELECT ID FROM match_tennis WHERE ID_VAINQUEUR=? OR ID_FINALISTE=?");
+			ps.setInt(1, ID);
+			ps.setInt(2, ID);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				IdMatch.add(rs.getInt("match_tennis.ID"));
+			}
+			ps.close();
+			for(int i=0; i<IdMatch.size(); i++) {
+				ps = cn.prepareStatement("DELETE FROM score_vainqueur WHERE ID=?");
+				ps.setInt(1, IdMatch.get(i));
+				ps.executeUpdate();
+			}
+			ps.close();	
+			
+			ps = cn.prepareStatement("DELETE FROM match_tennis WHERE ID_VAINQUEUR=? OR ID_FINALISTE=?");
+			ps.setInt(1, ID);
+			ps.setInt(2, ID);
+			ps.executeUpdate();
+			ps.close();
+			
 			ps = cn.prepareStatement("DELETE FROM joueur WHERE ID=?");	
 			ps.setInt(1, ID);
 			ps.executeUpdate();					
