@@ -482,7 +482,7 @@ public class Window extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(tableTournoi.getSelectedRow() == -1) {
 					errorLabelTournoi.setText("Pour pouvoir éditer les infos, veuillez selectionner un tournoi");
-					errorLabelTournoi.setVisible(true);					
+					errorLabelTournoi.setVisible(true);		 			
 				} else {
 				int ID = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),3);
 				int year = (int) modelTournoi.getValueAt(tableTournoi.getSelectedRow(),0);

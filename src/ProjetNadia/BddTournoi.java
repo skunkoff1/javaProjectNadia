@@ -186,7 +186,7 @@ public interface BddTournoi {
 										+ "LIKE '%"+search+"%' OR tournoi.NOM LIKE '%"+search+"%'");
 				rs = ps.executeQuery();
 				while(rs.next()) {				
-					model.addRow(new Object[] {rs.getInt("epreuve.ANNEE"), rs.getString("tournoi.NOM"), rs.getString("tournoi.TYPE_EPREUVE"), rs.getInt("epreuve.ID")});			
+					model.addRow(new Object[] {rs.getInt("epreuve.ANNEE"), rs.getString("tournoi.NOM"), rs.getString("epreuve.TYPE_EPREUVE"), rs.getInt("epreuve.ID")});			
 				}						
 			}catch (SQLException e){
 				e.printStackTrace();
