@@ -52,8 +52,7 @@ public interface BddTournoi {
 			try {
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
-				rs = ps.executeQuery();
-				ps.close();
+				rs = ps.executeQuery();				
 				boolean empty = true;
 				while( rs.next() ) {
 				    //ResultSet processing here
@@ -66,6 +65,7 @@ public interface BddTournoi {
 					System.out.println("pas de résultat");
 				}
 				else {
+					ps.close();
 					ps = cn.prepareStatement("INSERT INTO epreuve(ANNEE, TYPE_EPREUVE, ID_TOURNOI) VALUES(?,?,?)");
 					ps.setInt(1,newYear);
 					ps.setString(2, sex);
@@ -102,8 +102,7 @@ public interface BddTournoi {
 			try {
 				ps = cn.prepareStatement("SELECT ID FROM tournoi WHERE NOM = ?");	
 				ps.setString(1, name);
-				rs = ps.executeQuery();
-				ps.close();
+				rs = ps.executeQuery();				
 				boolean empty = true;
 				while( rs.next() ) {
 				    //ResultSet processing here
@@ -116,6 +115,7 @@ public interface BddTournoi {
 					System.out.println("pas de résultat");
 				}
 				else {
+					ps.close();
 					ps = cn.prepareStatement("UPDATE epreuve SET ANNEE=?, TYPE_EPREUVE=?, ID_TOURNOI=? WHERE ID=?");	
 					ps.setInt(1, newYear);
 					if(sex.equals("femme")) {
@@ -149,8 +149,27 @@ public interface BddTournoi {
 			String message;
 			String error;
 			Connection cn = BddConnection.getCn();
-			PreparedStatement ps = null;	
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			int IDmatch = 0;
 			try {
+				ps = cn.prepareStatement("SELECT ID FROM match_tennis WHERE match_tennis.ID_EPREUVE = ?");
+				ps.setInt(1, ID);
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					IDmatch = rs.getInt(1);
+				}
+				ps.close();
+				
+				ps = cn.prepareStatement("DELETE FROM score_vainqueur WHERE ID=?");
+				ps.setInt(1, IDmatch);
+				ps.executeUpdate();
+				ps.close();
+				
+				ps = cn.prepareStatement("DELETE FROM match_tennis WHERE match_tennis.ID_EPREUVE = ?");
+				ps.setInt(1, ID);
+				ps.executeUpdate();
+				ps.close();
 				ps = cn.prepareStatement("DELETE FROM epreuve WHERE ID = ?");	
 				ps.setInt(1, ID);
 				ps.executeUpdate();						

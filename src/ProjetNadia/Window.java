@@ -434,8 +434,7 @@ public class Window extends JFrame {
 		
 		searchTournoi = new JTextField();
 		searchTournoi.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("wesh");
+			public void actionPerformed(ActionEvent e) { 
 				errorLabelTournoi.setVisible(false);
 				String search = searchTournoi.getText();
 				BddTournoi.searchTournament(search, tableTournoi);
